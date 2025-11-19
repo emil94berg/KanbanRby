@@ -47,12 +47,7 @@ jobs:
       - name: Build project
         run: | 
           dotnet build
-        
-      - name: Run code
-        if: success()
-        run: dotnet run
-        timeout-minutes: 1
-        
+          
       - name: Failed to build 
         if: failure()
-        run: echo "Failed to build project" 
+        run: echo "😢 Failed to build project" 
