@@ -1,10 +1,14 @@
 using KanbanRby.Components;
+using KanbanRby.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Supabase
+builder.Services.AddSingleton<SupabaseService>();
 
 var app = builder.Build();
 
