@@ -1,10 +1,45 @@
 ﻿@page "/"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ISupabaseService Supabase
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+
+@code {
+
+    private List<Kanban> boards;
+
+    protected override async Task OnInitializedAsync()
+    {
+        boards = await Supabase.GetKanbanAsync();
+    }
+
+}
+
+@if (boards == null)
+{
+    <p>Laddar</p>
+}
+else if (!boards.Any())
+{
+    <p>Finns inga boards</p>
+}
+else
+{
+    <ul>
+        @foreach (var board in boards)
+        {
+            <li>
+                <p>@board.Name</p>
+                <p>@board.Description</p>
+            </li>
+        }
+    </ul>
+}
 
 <div class="columnContainer">
     <div><strong>Column1</strong>

@@ -3,7 +3,7 @@ using Supabase.Postgrest.Models;
 
 namespace KanbanRby.Models;
 
-[Table("kanban")]
+[Table("Kanban")]
 public class Kanban : BaseModel
 {
     [PrimaryKey("id")]
