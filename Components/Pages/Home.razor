@@ -6,58 +6,65 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (selectedBoardId != 0)
+{
+    <h1>@selectdBoard.Name</h1> 
+} 
 
 
 @code {
-
+    private int? selectedBoardId = 0;
     private List<Kanban> boards;
+    private Kanban? selectdBoard => boards.Where(x => x.Id == selectedBoardId).SingleOrDefault();
 
     protected override async Task OnInitializedAsync()
     {
         boards = await Supabase.GetKanbanAsync();
+        _ = selectedBoardId = int.Parse((boards[0].Id.ToString()));
     }
-
 }
 
 @if (boards == null)
 {
-    <p>Laddar</p>
+    //TODO 
+    //Add a method to add kanbans if none is added.
+    <strong>Loading...</strong>
 }
 else if (!boards.Any())
 {
-    <p>Finns inga boards</p>
+    <p>There is no boards made yet!</p>
 }
 else
 {
-    <ul>
-        @foreach (var board in boards)
-        {
-            <li>
-                <p>@board.Name</p>
-                <p>@board.Description</p>
-            </li>
-        }
-    </ul>
-}
-
-<div class="columnContainer">
-    <div><strong>Column1</strong>
-        <div class="card">
-            <p>Testcard</p>
-            <div class="task">
-                <p>This is a task</p>
+    <div class="mt-3">
+        <label class="form-label">Your kanbans</label>
+        <InputSelect @bind-Value="selectedBoardId">
+            <option value="0" disabled="disabled" selected="selected">-- Kanbans --</option>
+            @foreach (var board in boards)
+            {
+                <option value="@board.Id">@board.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="columnContainer">
+        <div><strong>Column1</strong>
+            <div class="card">
+                <p>Testcard</p>
+                <div class="task">
+                    <p>This is a task</p>
+                </div>
+            </div>
+            <div class="card">
+                <p style="text-underline: black">Testcard</p>
             </div>
         </div>
-        <div class="card">
-            <p style="text-underline: black">Testcard</p>
+        <div><strong>Column2</strong>
+            <div class="card">
+                <p style="text-underline: black">Testcard</p>
+            </div>
         </div>
+        <div><strong>Column3</strong></div>
+        <div><strong>Column4</strong></div>
     </div>
-    <div><strong>Column2</strong>
-        <div class="card">
-            <p style="text-underline: black">Testcard</p>
-        </div>
-    </div>
-    <div><strong>Column3</strong></div>
-    <div><strong>Column4</strong></div>
-</div>
+}
+
