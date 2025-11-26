@@ -3,15 +3,15 @@ using Supabase.Postgrest.Models;
 
 namespace KanbanRby.Models;
 
-[Table("card")]
+[Table("Card")]
 public class Card :  BaseModel
 {
     [PrimaryKey("id")]
-    public long Id { get; set; }
+    public int Id { get; set; }
     
     [Reference(typeof(Column))]
     [Column("column_id")]
-    public long ColumnId { get; set; }
+    public int ColumnId { get; set; }
     
     [Column("name")]
     public string Name { get; set; }

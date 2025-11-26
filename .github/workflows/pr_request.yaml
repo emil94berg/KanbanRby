@@ -1,0 +1,17 @@
+name: PR to Discord
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR notification to Discord
+        uses: stegzilla/discord-notify@v4
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "New Pull Request Opened"
+          message: "A new pull request has been opened by ${{ github.actor }} in the repository ${{ github.repository }}. PR Title: ${{ github.event.pull_request.title }}. PR URL: ${{ github.event.pull_request.html_url }}"
+          

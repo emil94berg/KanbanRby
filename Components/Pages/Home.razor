@@ -1,28 +1,89 @@
 ﻿@page "/"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using Task = Task
+@inject ISupabaseService Supabase
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (_boards == null)
+{
+    //TODO 
+    //Add a method to add kanbans if none is added.
+    <strong>Loading...</strong>
+}
+else if (!_boards.Any())
+{
+    <p>There are no boards made yet!</p>
+}
+else
+{
+    <h1>@_selectedBoard?.Name</h1>
 
-Welcome to your new app.
+    
+    <select class="form-select" @bind="SelectedBoardId">
+        @foreach (var board in _boards)
+        {
+            <option value="@board.Id">
+                @board.Name
+            </option>
+        }
+    </select>
+    
 
-<div class="columnContainer">
-    <div><strong>Column1</strong>
-        <div class="card">
-            <p>Testcard</p>
-            <div class="task">
-                <p>This is a task</p>
+    <div class="columnContainer">
+        <div><strong>Column1</strong>
+            <div class="card">
+                <p>Testcard</p>
+                <div class="task">
+                    <p>This is a task</p>
+                </div>
+            </div>
+            <div class="card">
+                <p>Testcard</p>
             </div>
         </div>
-        <div class="card">
-            <p style="text-underline: black">Testcard</p>
+        <div><strong>Column2</strong>
+            <div class="card">
+                <p>Testcard</p>
+            </div>
         </div>
+        <div><strong>Column3</strong></div>
+        <div><strong>Column4</strong></div>
     </div>
-    <div><strong>Column2</strong>
-        <div class="card">
-            <p style="text-underline: black">Testcard</p>
-        </div>
-    </div>
-    <div><strong>Column3</strong></div>
-    <div><strong>Column4</strong></div>
-</div>
+}
+
+@code {
+    private List<Kanban> _boards;
+    private Kanban? _selectedBoard;
+    
+
+    private int _selectedBoardId;
+
+    private int SelectedBoardId
+    {
+        get => _selectedBoardId;
+        set
+        {
+            if (_selectedBoardId != value)
+            {
+                _selectedBoardId = value;
+                _selectedBoard = _boards.SingleOrDefault(b => b.Id == _selectedBoardId);
+            }
+        }
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _selectedBoardId = 1;
+        _boards = await Supabase.GetKanbanAsync();
+        if (_boards.Any())
+        {
+            SelectedBoardId = _boards.First().Id;
+        } 
+    }
+}
+
