@@ -11,7 +11,7 @@ jobs:
       - name: Send PR notification to Discord
         uses: stegzilla/discord-notify@v4
         with:
-          webhook-url: "https://discord.com/api/webhooks/1443229451830825010/aYXHIf6qyGmE2u9Z6dc5kBqIVtDuGL7CjldbseqhTOue7euG7oh7D_Y6aC6LlbsrM7uz"
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "New Pull Request Opened"
           message: "A new pull request has been opened by ${{ github.actor }} in the repository ${{ github.repository }}. PR Title: ${{ github.event.pull_request.title }}. PR URL: ${{ github.event.pull_request.html_url }}"
           
