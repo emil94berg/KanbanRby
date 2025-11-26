@@ -8,11 +8,11 @@ namespace KanbanRby.Models;
 public class Column : BaseModel
 {
     [PrimaryKey("id")]
-    public long Id { get; set; }
+    public int Id { get; set; }
     
     [Reference(typeof(Kanban))]
     [Column("kanban_id")]
-    public long KanbanId { get; set; }
+    public int KanbanId { get; set; }
     
     [Column("name")]
     public string? Name { get; set; }

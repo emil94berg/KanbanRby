@@ -7,11 +7,11 @@ namespace KanbanRby.Models;
 public class Task : BaseModel
 {
     [PrimaryKey("id")]
-    public long Id { get; set; }
+    public int Id { get; set; }
     
     [Reference(typeof(Card))]
     [Column("card_id")]
-    public long CardId { get; set; }
+    public int CardId { get; set; }
     
     [Column("name")]
     public string Name { get; set; }
