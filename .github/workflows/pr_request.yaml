@@ -16,7 +16,7 @@ jobs:
           title: "🚀 New Pull Request: ${{ github.event.pull_request.title }}"
           message: |
             **Repository:** ${{ github.repository }}
-            **Branch:** ```${{ github.head_ref }}``` --> ```${{github.base_ref}}```
+            **Branch:** ${{ github.head_ref }} --> ${{github.base_ref}}
             **Author:** ${{ github.actor }}
             [View Pull Request](${{ github.event.pull_request.html_url }})
           color: '#3371FF'
