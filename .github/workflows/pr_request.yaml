@@ -1,7 +1,7 @@
 name: PR to Discord
 on:
   pull_request:
-    types: [opened, reopened, edited]
+    types: [opened, reopened, closed]
     branches:
       - main
       - dev
