@@ -13,5 +13,11 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "New Pull Request Opened"
-          message: "A new pull request has been opened by ${{ github.actor }} in the repository ${{ github.repository }}. PR Title: ${{ github.event.pull_request.title }}. PR URL: ${{ github.event.pull_request.html_url }}"
+          message: | 
+           A new pull request has been opened by ${{ github.actor }} in the repository ${{ github.repository }}. 
+           PR Title: ${{ github.event.pull_request.title }}. 
+           PR URL: ${{ github.event.pull_request.html_url }}
+          include_image: true
+          custom_image_url: ${{ github.event.pull_request.user.avatar_url }}
+          username: ${{ github.event.pull_request.user.login }}
           
