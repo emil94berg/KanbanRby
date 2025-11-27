@@ -9,7 +9,8 @@ jobs:
   notify-discord:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord - PR Open / Reopened
+      - name: Notify Discord - PR Open
+        if: ${{ github.event.action == 'opened' || github.event.action == 'reopened'}}
         uses: stegzilla/discord-notify@v4
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
