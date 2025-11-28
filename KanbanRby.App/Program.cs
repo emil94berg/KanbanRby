@@ -1,4 +1,6 @@
 using KanbanRby.Components;
+using KanbanRby.Factories;
+using KanbanRby.Factories.Interfaces;
 using KanbanRby.Services.Interfaces;
 using KanbanRby.Services;
 
@@ -11,6 +13,7 @@ builder.Services.AddRazorComponents()
 // Supabase
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 
+builder.Services.AddTransient(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
