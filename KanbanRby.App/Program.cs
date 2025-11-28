@@ -12,8 +12,10 @@ builder.Services.AddRazorComponents()
 
 // Supabase
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
+builder.Services.AddTransient<IUserManagementService, UserManagementService>();
 
 builder.Services.AddTransient(typeof(ICrudFactory<>), typeof(CrudFactory<>));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

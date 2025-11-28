@@ -58,7 +58,6 @@ else
     private List<Kanban> _boards;
     private Kanban? _selectedBoard;
     
-
     private int _selectedBoardId;
 
     private int SelectedBoardId
@@ -72,13 +71,11 @@ else
                 _selectedBoard = _boards.SingleOrDefault(b => b.Id == _selectedBoardId);
             }
         }
-
     }
 
 
     protected override async Task OnInitializedAsync()
     {
-        _selectedBoardId = 1;
         _boards = await Supabase.GetKanbanAsync();
         if (_boards.Any())
         {
