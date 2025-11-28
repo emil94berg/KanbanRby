@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanRby", "KanbanRby.csproj", "{A58914FA-BE22-40E1-BA95-38433A321702}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanRby", "KanbanRby.App\KanbanRby.csproj", "{A58914FA-BE22-40E1-BA95-38433A321702}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanRby.Test", "KanbanRby.Test\KanbanRby.Test.csproj", "{5CAFFE72-0DB0-4543-870C-E6CB28E021C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{A58914FA-BE22-40E1-BA95-38433A321702}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A58914FA-BE22-40E1-BA95-38433A321702}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A58914FA-BE22-40E1-BA95-38433A321702}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAFFE72-0DB0-4543-870C-E6CB28E021C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAFFE72-0DB0-4543-870C-E6CB28E021C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAFFE72-0DB0-4543-870C-E6CB28E021C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAFFE72-0DB0-4543-870C-E6CB28E021C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
