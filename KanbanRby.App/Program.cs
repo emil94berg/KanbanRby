@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 
 builder.Services.AddTransient(typeof(ICrudFactory<>), typeof(CrudFactory<>));
+builder.Services.AddScoped<ICardManagementService, CardManagementService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

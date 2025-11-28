@@ -21,6 +21,6 @@ public class Column : BaseModel
     public string? Description { get; set; }
     
     [Column("created_at")]
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 }

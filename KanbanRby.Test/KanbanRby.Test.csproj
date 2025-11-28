@@ -18,4 +18,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\KanbanRby.App\KanbanRby.csproj" />
+    </ItemGroup>
+
 </Project>
