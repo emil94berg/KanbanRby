@@ -19,7 +19,7 @@ public class KanbanBoardService : IKanbanBoardService
     
     public async Task<Kanban?> GetByIdAsync(int id) => await _kanbanFactory.GetByIdAsync(id);
     
-    public async Task<Kanban> CreateKanban(string name, string description)
+    public async Task<Kanban> CreateKanbanAsync(string name, string description)
     {
         var newBoard = new Kanban()
         {
