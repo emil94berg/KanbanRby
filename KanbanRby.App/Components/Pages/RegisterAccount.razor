@@ -1,0 +1,50 @@
+﻿@page "/registerAccount"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using Microsoft.IdentityModel.Tokens
+@using Task = System.Threading.Tasks.Task
+@inject ISupabaseAuthService SupabaseAuth
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>RegisterAccount</h3>
+<EditForm Model="@_loginModel" OnValidSubmit="@CreateAccount" FormName="CreateAccountForm">
+    <div>
+        <label>Email: </label>
+        <InputText @bind-Value="@_loginModel.Email"></InputText>
+    </div> 
+    <div>
+        <label>Display name: </label>
+        <InputText @bind-Value="@_loginModel.DisplayName"></InputText>
+    </div>
+    <div>
+        <label>Password: </label>
+        <InputText @bind-Value="@_loginModel.Password" type="password"></InputText>
+    </div>
+    <div>
+        <label>Confirm password: </label>
+        <InputText @bind-Value="@ConfirmPassword" type="password"></InputText>
+    </div>
+    <button type="submit">Create Account</button>
+</EditForm>
+
+@code {
+    public LoginModel _loginModel { get; set; }
+    public string ConfirmPassword { get; set; }
+   
+
+
+    public async Task CreateAccount()
+    {
+        if (!_loginModel.Email.IsNullOrEmpty() && !_loginModel.Password.IsNullOrEmpty() && !_loginModel.DisplayName.IsNullOrEmpty()
+            && _loginModel.Password == ConfirmPassword)
+        {
+            await SupabaseAuth.RegisterNewAccountAsync(_loginModel.Email, _loginModel.Password);
+            await SupabaseAuth.SetDisplayName(_loginModel.DisplayName);
+            NavigationManager.NavigateTo("/");
+        }
+        
+    }
+    
+    
+}
