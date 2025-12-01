@@ -1,61 +1,45 @@
 ﻿@page "/login"
 @inject ISupabaseService Supabase
-@inject IUserManagementService UserManagement
+@inject ISupabaseAuthService SupabaseAuth
+@inject NavigationManager NavigationManager
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
+@using Supabase.Gotrue
 @using Task = System.Threading.Tasks.Task
 @rendermode InteractiveServer
 
 <h3>Login</h3>
 
-<h3>Log in</h3>
-@if (_user != null)
-{
-    <h3>@_user.Name</h3>
-}
 <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin" FormName="LogInForm">
     <div>
         <label>Email: </label>
         <InputText @bind-Value="@loginModel.Email"></InputText>
     </div> <div>
         <label>Password: </label>
-        <InputText @bind-Value="@loginModel.Password"></InputText>
+        <InputText @bind-Value="@loginModel.Password" type="password"></InputText>
     </div>
     <button type="submit">Click here!</button>
 </EditForm>
 
 @code {
     private LoginModel loginModel = new();
-    private User _user;
-
-    public User User
-    {
-        get => _user;
-        set
-        {
-            if (_user != value)
-            {
-                _user = value;
-            }
-        }
-    }
-
+    
+    
     private async Task HandleLogin()
     {
         try
         {
-            Console.WriteLine("try");
-            var user = await UserManagement.GetUserByEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
-            if (user != null)
+            var session = await SupabaseAuth.LoginUserAsync(loginModel.Email, loginModel.Password);
+            
+            if (session != null)
             {
-                User = user;
+                Console.WriteLine("Logged in!");
+                NavigationManager.NavigateTo("/");
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            Console.WriteLine("catchen");
         }
-        
     }
 }
