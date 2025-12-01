@@ -14,9 +14,9 @@ public class CardManagementService : ICardManagementService
         _cardFactory = cardFactory;
     }
 
-    public async Task<Card> CreateCardAsync(string name, string description)
+    public async Task<Card> CreateCardAsync(string name, string description, int columnId)
     {
-        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description});
+        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description,  ColumnId = columnId});
         return newCard;
     }
     

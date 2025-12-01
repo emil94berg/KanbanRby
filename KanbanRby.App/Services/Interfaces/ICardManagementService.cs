@@ -5,7 +5,7 @@ namespace KanbanRby.Services.Interfaces;
 
 public interface ICardManagementService
 {
-    Task<Card> CreateCardAsync(string name, string description);
+    Task<Card> CreateCardAsync(string name, string description,  int columnId);
     Task<Card> GetCardByIdAsync(int id);
     Task DeleteCardByIdAsync(int id);
     Task UpdateCardAsync(int id);
