@@ -29,10 +29,13 @@
 </EditForm>
 
 @code {
-    public LoginModel _loginModel { get; set; }
+    private LoginModel _loginModel { get; set; }
     public string ConfirmPassword { get; set; }
-   
-
+    
+    protected override void OnInitialized()
+    {
+        _loginModel = new LoginModel();
+    }
 
     public async Task CreateAccount()
     {
