@@ -31,11 +31,12 @@ public class CardManagementService : ICardManagementService
         await _cardFactory.DeleteAsync(id);
     }
 
-    public async Task UpdateCardAsync(int id)
-    {
-        var card = await _cardFactory.GetByIdAsync(id);
-        await _cardFactory.UpdateAsync(card);
-    }
+    public async Task<Card> UpdateCardAsync(Card card) => await _cardFactory.UpdateAsync(card);
+    // {
+    //     //var card = await _cardFactory.GetByIdAsync(id);
+    //     await _cardFactory.UpdateAsync(card);
+    //     return card;
+    // }
     public async Task<List<Card>> GetAllCardsAsync()
     {
         return await _cardFactory.GetAllAsync();

@@ -47,6 +47,26 @@ public class CardManagement_Test : IAsyncLifetime
         
         _createdCardIds.Add(actual.Id);
     }
+    
+    [Fact]
+    public async void ShouldMoveCardBetweenColumns()
+    {
+        var expected = "test card changed";
+        var expectedColumnId = 2;
+        var name = "test card";
+        var description = "test card description";
+        var columnId = 1;
+        
+        var actual = await _cardManagementService.CreateCardAsync(name, description, columnId);
+        //actual.Name = expected;
+        //var newcard= await _cardManagementService.UpdateCardAsync(actual);
+        await _cardManagementService.MoveCardBetweenColumnsAsync(actual.Id, expectedColumnId);
+        var cardWithNewColumn = await _cardManagementService.GetCardByIdAsync(actual.Id);
+        
+        Assert.Equal(expectedColumnId, cardWithNewColumn.ColumnId);
+        _createdCardIds.Add(actual.Id);
+        
+    }
 
     public async Task DisposeAsync()
     {
