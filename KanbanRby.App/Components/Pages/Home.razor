@@ -3,6 +3,7 @@
 @using KanbanRby.Services.Interfaces
 @using Task = Task
 @inject ISupabaseService Supabase
+@inject IKanbanBoardService KanbanService
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -79,7 +80,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         _selectedBoardId = 1;
-        _boards = await Supabase.GetKanbanAsync();
+        _boards = await KanbanService.GetAllAsync();
         if (_boards.Any())
         {
             SelectedBoardId = _boards.First().Id;
