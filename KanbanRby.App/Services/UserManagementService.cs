@@ -3,10 +3,14 @@ using KanbanRby.Models;
 using KanbanRby.Services.Interfaces;
 using Task = System.Threading.Tasks.Task;
 
+
 namespace KanbanRby.Services;
+
 
 public class UserManagementService : IUserManagementService
 {
+    public ISupabaseService SupabaseService { get; set; }
+    
     private readonly ICrudFactory<User> _userCrudFactory;
 
     public UserManagementService(ICrudFactory<User> userCrudFactory)
@@ -37,5 +41,14 @@ public class UserManagementService : IUserManagementService
     public async Task DeleteUserAsync(int id)
     {
         await _userCrudFactory.DeleteAsync(id);
+    }
+
+    public async Task<User> GetUserByEmailAndPasswordAsync(string email, string password)
+    {
+        var client = await SupabaseService.GetClientAsync();
+        var response = await client
+            .From<User>()
+            .Where(u => u.Email == email && u.Password == password).Single();
+        return response;
     }
 }

@@ -2,9 +2,11 @@
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
+      - dev
 
 jobs:
   print-runtime-context:
@@ -51,3 +53,46 @@ jobs:
       - name: Failed to build 
         if: failure()
         run: echo "😢 Failed to build project" 
+
+      - name: Run tests
+        if: success()
+        run: |
+           dotnet test KanbanRby.Test/KanbanRby.Test.csproj \
+             --logger "trx;LogFileName=test-results.trx" \
+             --logger "console;verbosity=detailed" \
+             --results-directory ./TestResults
+      
+      - name: Parse test results
+        if: always()
+        id: test-results
+        run: |
+          if [ -f ./TestResults/test-results.trx ]; then
+            TOTAL=$(grep -o 'total="[0-9]*"' ./TestResults/test-results.trx | grep -o '[0-9]*' | head -1)
+            PASSED=$(grep -o 'passed="[0-9]*"' ./TestResults/test-results.trx | grep -o '[0-9]*' | head -1)
+            FAILED=$(grep -o 'failed="[0-9]*"' ./TestResults/test-results.trx | grep -o '[0-9]*' | head -1)
+            
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "passed=$PASSED" >> $GITHUB_OUTPUT
+            echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          else
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "passed=0" >> $GITHUB_OUTPUT
+            echo "failed=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send results to discord
+        if: always()
+        uses: stegzilla/discord-notify@v4
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "🧪 Test Results"
+          message: |
+            **Total Tests:** ${{ steps.test-results.outputs.total }}
+            **Passed:** ✅ ${{ steps.test-results.outputs.passed }}
+            **Failed:** ❌ ${{ steps.test-results.outputs.failed }}
+            
+            **PR:** [View Pull Request](${{ github.event.pull_request.html_url }})
+            **Branch:** ${{ github.head_ref }} → ${{ github.base_ref }}
+          colour: ${{ steps.test-results.outputs.failed == '0' && '#00FF00' || '#FF0000' }}
+          username: ${{ github.event.pull_request.user.login || github.actor}}
+          avatar_url: ${{ github.event.pull_request.user.avatar_url || format('https://github.com/{0}.png', github.actor)}}
