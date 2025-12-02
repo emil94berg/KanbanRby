@@ -15,6 +15,7 @@ builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 builder.Services.AddScoped<IKanbanBoardService, KanbanBoardService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 
+builder.Services.AddScoped<ICardManagementService, CardManagementService>();
 builder.Services.AddScoped(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
 
