@@ -10,7 +10,7 @@ public class Column : BaseModel
     [PrimaryKey("id")]
     public int Id { get; set; }
     
-    [Reference(typeof(Kanban))]
+    [Reference(typeof(Kanban), joinType: ReferenceAttribute.JoinType.Left, includeInQuery:true)]
     [Column("kanban_id")]
     public int KanbanId { get; set; }
     
@@ -19,6 +19,7 @@ public class Column : BaseModel
     
     [Column("description")]
     public string? Description { get; set; }
+    
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;

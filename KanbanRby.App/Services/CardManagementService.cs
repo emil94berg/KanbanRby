@@ -16,7 +16,9 @@ public class CardManagementService : ICardManagementService
 
     public async Task<Card> CreateCardAsync(string name, string description, int columnId)
     {
-        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description,  ColumnId = columnId});
+        var cardsInColumn = (await GetAllCardsAsync(columnId)).Count;
+        var rowId = cardsInColumn + 1; 
+        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description,  ColumnId = columnId, RowId = rowId});
         return newCard;
     }
     
@@ -32,14 +34,19 @@ public class CardManagementService : ICardManagementService
     }
 
     public async Task<Card> UpdateCardAsync(Card card) => await _cardFactory.UpdateAsync(card);
-    // {
-    //     //var card = await _cardFactory.GetByIdAsync(id);
-    //     await _cardFactory.UpdateAsync(card);
-    //     return card;
-    // }
-    public async Task<List<Card>> GetAllCardsAsync()
+    
+    public async Task<List<Card>> GetAllCardsAsync(int columnId)
     {
-        return await _cardFactory.GetAllAsync();
+        var getAllCardsOfColumn = new List<Card>();
+        var getAllCards = await _cardFactory.GetAllAsync();
+        foreach (var card in getAllCards)
+        {
+            if (card.ColumnId == columnId)
+            {
+                getAllCardsOfColumn.Add(card);
+            }
+        }
+        return getAllCardsOfColumn;
     }
 
     public async Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId)
@@ -49,24 +56,22 @@ public class CardManagementService : ICardManagementService
         await _cardFactory.UpdateAsync(card);       
     }
     
-    // public async Task ChangeOrderOfCardsAsync(int cardId, int intChange)
-    // {
-    //     var card = await _cardFactory.GetByIdAsync(cardId);
-    //     var cards = await _cardFactory.GetAllAsync();
-    //     int currentPos = 0;
-    //     int index = 0;
-    //
-    //     foreach (var cardInCards in cards)
-    //     {
-    //         if(card == cardInCards)
-    //         {
-    //             currentPos = index;
-    //         }
-    //         index++;
-    //     }
-    //     
-    //     cards[currentPos] = card;
-    //
-    //
-    // }
+    public async Task ChangeOrderOfCardsAsync(int cardId, int intChange, List<Card> cards)
+    {
+        var card = await _cardFactory.GetByIdAsync(cardId);
+        
+        var oldRowId = card.RowId;
+        var newRowId = intChange < 0 ? card.RowId - 1 : card.RowId + 1;
+        
+        var cardToChangeWith =  cards.FirstOrDefault(c => c.RowId == newRowId);
+
+        if (cardToChangeWith != null)
+        {
+            cardToChangeWith.RowId = oldRowId;
+            await _cardFactory.UpdateAsync(cardToChangeWith);
+        }
+
+        card.RowId = newRowId;
+        await _cardFactory.UpdateAsync(card);
+    }
 }

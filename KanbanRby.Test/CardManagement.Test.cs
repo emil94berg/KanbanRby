@@ -1,14 +1,8 @@
 ﻿using KanbanRby.Factories;
-using KanbanRby.Factories.Interfaces;
 using KanbanRby.Models;
 using KanbanRby.Services;
-using Supabase.Postgrest.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Testing;
 using KanbanRby.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Supabase.Realtime;
-using Xunit.Abstractions;
 using Task = System.Threading.Tasks.Task;
 
 namespace KanbanRby.Test;
@@ -32,7 +26,7 @@ public class CardManagement_Test : IAsyncLifetime
     }
     
     [Fact]
-    public async void ShouldAddCardToSupabase()
+    public async Task ShouldAddCardToSupabase()
     {
         var name = "test card";
         var description = "test card description";
@@ -49,23 +43,49 @@ public class CardManagement_Test : IAsyncLifetime
     }
     
     [Fact]
-    public async void ShouldMoveCardBetweenColumns()
+    public async Task ShouldMoveCardBetweenColumns()
     {
-        var expected = "test card changed";
         var expectedColumnId = 2;
         var name = "test card";
         var description = "test card description";
         var columnId = 1;
         
         var actual = await _cardManagementService.CreateCardAsync(name, description, columnId);
-        //actual.Name = expected;
-        //var newcard= await _cardManagementService.UpdateCardAsync(actual);
         await _cardManagementService.MoveCardBetweenColumnsAsync(actual.Id, expectedColumnId);
         var cardWithNewColumn = await _cardManagementService.GetCardByIdAsync(actual.Id);
         
         Assert.Equal(expectedColumnId, cardWithNewColumn.ColumnId);
         _createdCardIds.Add(actual.Id);
         
+    }
+
+    [Fact]
+    public async Task ShouldMoveCardUpOnePositionInColumn()
+    {
+        var name = "test card";
+        var description = "test card description";
+        var columnId = 1;
+        var intChange = -1;
+        List<Card> allCards = new();
+        
+        var actual = await _cardManagementService.CreateCardAsync(name, description, columnId);
+        var actual2 = await _cardManagementService.CreateCardAsync("test card2", description, columnId);
+        var actual3 = await _cardManagementService.CreateCardAsync("test card3", description, columnId);
+        var actual4 = await _cardManagementService.CreateCardAsync("test card4", description, 2);
+        
+        allCards =  await _cardManagementService.GetAllCardsAsync(columnId);
+        await _cardManagementService.ChangeOrderOfCardsAsync(actual3.Id, intChange, allCards);
+        actual3 = await _cardManagementService.GetCardByIdAsync(actual3.Id);
+        
+        
+        Assert.NotNull(allCards);
+        Assert.Equal(2, actual3.RowId);
+        Assert.Equal(3, allCards.Count);
+        
+        _createdCardIds.Add(actual.Id);
+        _createdCardIds.Add(actual2.Id);
+        _createdCardIds.Add(actual3.Id);
+        _createdCardIds.Add(actual4.Id);
     }
 
     public async Task DisposeAsync()

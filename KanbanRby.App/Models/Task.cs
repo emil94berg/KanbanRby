@@ -9,7 +9,7 @@ public class Task : BaseModel
     [PrimaryKey("id")]
     public int Id { get; set; }
     
-    [Reference(typeof(Card))]
+    [Reference(typeof(Card), joinType: ReferenceAttribute.JoinType.Left, includeInQuery:true)]
     [Column("card_id")]
     public int CardId { get; set; }
     

@@ -29,5 +29,6 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.CardManagement_Test.ShouldAddCardToSupabase&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.CardManagement_Test.ShouldMoveCardBetweenColumns&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.CardManagement_Test.ShouldMoveCardUpOnePositionInColumn&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
