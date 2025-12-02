@@ -10,11 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Supabase
+// Services
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
+builder.Services.AddScoped<IKanbanBoardService, KanbanBoardService>();
+builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 
-builder.Services.AddTransient(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 builder.Services.AddScoped<ICardManagementService, CardManagementService>();
+builder.Services.AddScoped(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

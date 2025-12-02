@@ -1,6 +1,46 @@
-﻿namespace KanbanRby.Services;
+﻿using KanbanRby.Factories.Interfaces;
+using KanbanRby.Models;
+using KanbanRby.Services.Interfaces;
+using Task = System.Threading.Tasks.Task;
 
-public class TaskManagementService
+namespace KanbanRby.Services;
+
+public class TaskManagementService : ITaskManagementService
 {
+    private readonly ICrudFactory<Models.Task> _taskFactory;
     
+    public TaskManagementService(ICrudFactory<Models.Task> taskFactory)
+    {
+        _taskFactory = taskFactory;
+    }
+
+    #region CRUD Operations
+    public async Task<List<Models.Task>> GetAllTasks() => await _taskFactory.GetAllAsync();
+
+    public async Task<Models.Task?> GetByIdAsync(int id) => await _taskFactory.GetByIdAsync(id);
+
+    public async Task<List<Models.Task>> GetTasksByCardId(int cardId)
+    {
+        var allTasks = await _taskFactory.GetAllAsync();
+        return allTasks
+            .Where(t => t.CardId == cardId)
+            .OrderBy(c => c)
+            .ToList();
+    }
+
+    public async Task<Models.Task> CreateTaskAsync(string name)
+    {
+        var newTask = new Models.Task()
+        {
+            Name = name
+        };
+        
+        var createdTask = await _taskFactory.CreateAsync(newTask);
+        return createdTask;
+    }
+
+    public async Task<Models.Task> UpdateTaskAsync(Models.Task task) => await _taskFactory.UpdateAsync(task);
+    
+    public async Task DeleteTaskAsync(int id) => await _taskFactory.DeleteAsync(id);
+    #endregion
 }

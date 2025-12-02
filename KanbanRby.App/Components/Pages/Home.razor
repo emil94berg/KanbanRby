@@ -3,6 +3,7 @@
 @using KanbanRby.Services.Interfaces
 @using Task = Task
 @inject ISupabaseService Supabase
+@inject IKanbanBoardService KanbanService
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -10,7 +11,6 @@
 @if (_boards == null)
 {
     //TODO 
-    //Add a method to add kanbans if none is added.
     <strong>Loading...</strong>
 }
 else if (!_boards.Any())
@@ -75,11 +75,10 @@ else
 
     }
 
-
     protected override async Task OnInitializedAsync()
     {
         _selectedBoardId = 1;
-        _boards = await Supabase.GetKanbanAsync();
+        _boards = await KanbanService.GetAllAsync();
         if (_boards.Any())
         {
             SelectedBoardId = _boards.First().Id;
