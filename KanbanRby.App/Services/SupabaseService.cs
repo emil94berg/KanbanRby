@@ -33,23 +33,4 @@ public class SupabaseService :  ISupabaseService
         return _client;
     }
 
-    public async Task<Kanban> CreateKanbanAsync(string name, string description)
-    {
-        await _client.InitializeAsync();
-        
-        var newKanban = new Kanban
-        {
-            Name = name,
-            Description = description
-        };
-        await _client.From<Kanban>().Insert(newKanban);
-        return newKanban;
-    }
-
-    public async Task<List<Kanban>> GetKanbanAsync()
-    {
-        await _client.InitializeAsync();
-        var result = await _client.From<Kanban>().Get();
-        return result.Models.OrderBy(x => x.Name).ToList();
-    }
 }
