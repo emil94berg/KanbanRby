@@ -43,6 +43,7 @@
             && _loginModel.Password == ConfirmPassword)
         {
             await SupabaseAuth.RegisterNewAccountAsync(_loginModel.Email, _loginModel.Password);
+            await SupabaseAuth.LoginUserAsync(_loginModel.Email, _loginModel.Password);
             await SupabaseAuth.SetDisplayName(_loginModel.DisplayName);
             NavigationManager.NavigateTo("/");
         }
