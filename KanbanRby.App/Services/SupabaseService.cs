@@ -32,4 +32,5 @@ public class SupabaseService :  ISupabaseService
         await _initTask;
         return _client;
     }
+
 }

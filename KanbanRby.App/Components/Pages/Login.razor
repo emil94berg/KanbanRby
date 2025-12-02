@@ -1,0 +1,42 @@
+﻿@page "/login"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ISupabaseAuthService SupabaseAuth
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Login</h3>
+<EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin" FormName="LogInForm">
+    <div>
+        <label>Email: </label>
+        <InputText @bind-Value="@_loginModel.Email"></InputText>
+    </div> <div>
+        <label>Password: </label>
+        <InputText @bind-Value="@_loginModel.Password" type="password"></InputText>
+    </div>
+    <button type="submit">Click here!</button>
+</EditForm>
+
+@code {
+    private LoginModel _loginModel = new();
+    
+    
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var session = await SupabaseAuth.LoginUserAsync(_loginModel.Email, _loginModel.Password);
+            
+            if (session != null)
+            {
+                Console.WriteLine("Logged in!");
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+}
