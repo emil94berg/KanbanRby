@@ -30,7 +30,10 @@ public class CardManagementService : ICardManagementService
     
     public async Task DeleteCardByIdAsync(int id)
     {
+        var deleteCard = await _cardFactory.GetByIdAsync(id);
+        var oldColumnId = deleteCard.ColumnId;
         await _cardFactory.DeleteAsync(id);
+        await ReorderCardsInColumnAsync(oldColumnId);
     }
 
     public async Task<Card> UpdateCardAsync(Card card) => await _cardFactory.UpdateAsync(card);
@@ -52,8 +55,10 @@ public class CardManagementService : ICardManagementService
     public async Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId)
     {
         var card = await _cardFactory.GetByIdAsync(cardId); 
+        var oldColumnId = card.ColumnId;
         card.ColumnId  = newColumnId;
-        await _cardFactory.UpdateAsync(card);       
+        await _cardFactory.UpdateAsync(card);
+        await ReorderCardsInColumnAsync(oldColumnId);
     }
     
     public async Task ChangeOrderOfCardsAsync(int cardId, int intChange, List<Card> cards)
@@ -73,5 +78,20 @@ public class CardManagementService : ICardManagementService
 
         card.RowId = newRowId;
         await _cardFactory.UpdateAsync(card);
+    }
+
+    public async Task ReorderCardsInColumnAsync(int columnId)
+    {
+        var cards = (await GetAllCardsAsync(columnId));
+        var index = 1;
+        foreach (var card in cards)
+        {
+            if (card.RowId != index)
+            {
+                card.RowId = index;
+                await _cardFactory.UpdateAsync(card);
+            }
+            index++;
+        }
     }
 }
