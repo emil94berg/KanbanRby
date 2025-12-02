@@ -12,4 +12,5 @@ public interface ICardManagementService
     Task<List<Card>> GetAllCardsAsync(int columnId);
     Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId);
     Task ChangeOrderOfCardsAsync(int cardId, int intChange, List<Card> cards);
+    Task ReorderCardsInColumnAsync(int columnId);
 }
