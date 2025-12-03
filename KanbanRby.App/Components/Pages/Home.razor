@@ -1,9 +1,11 @@
 ﻿@page "/"
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
+@using KanbanRby.Sessions.Interfaces
 @using Task = Task
 @inject ISupabaseService Supabase
 @inject IKanbanBoardService KanbanService
+@inject IUserSession UserSession
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -20,6 +22,19 @@ else if (!_boards.Any())
 else
 {
     <h1>@_selectedBoard?.Name</h1>
+    @if (UserSession.CurrentUser != null)
+    {
+        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
+        {
+            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
+        }
+        else
+        {
+            <h1>@UserSession.CurrentUser.Email</h1>
+        }
+        
+    }
+    
 
     
     <select class="form-select" @bind="SelectedBoardId">
@@ -82,7 +97,15 @@ else
         if (_boards.Any())
         {
             SelectedBoardId = _boards.First().Id;
-        } 
+        }
+
+        UserSession.OnChange += StateHasChanged;
+        await UserSession.RefreshUserAsync();
+    }
+
+    public void Dispose()
+    {
+        UserSession.OnChange -= StateHasChanged;
     }
 }
 

@@ -3,6 +3,8 @@ using KanbanRby.Factories;
 using KanbanRby.Factories.Interfaces;
 using KanbanRby.Services.Interfaces;
 using KanbanRby.Services;
+using KanbanRby.Sessions;
+using KanbanRby.Sessions.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 builder.Services.AddScoped<IKanbanBoardService, KanbanBoardService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
+builder.Services.AddScoped<IUserSession, UserSession>();
+
 
 builder.Services.AddScoped(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
