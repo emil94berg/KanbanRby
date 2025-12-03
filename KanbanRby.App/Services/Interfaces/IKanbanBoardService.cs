@@ -10,4 +10,5 @@ public interface IKanbanBoardService
     Task<Kanban> CreateKanbanAsync(string name, string description);
     Task UpdateAsync(Kanban board);
     Task DeleteAsync(object id);
+    Task <List<Kanban>> GetUserKanbansAsync(string userId);
 }

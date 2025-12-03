@@ -32,6 +32,11 @@ public class KanbanBoardService : IKanbanBoardService
     
     public async Task UpdateAsync(Kanban board) => await _kanbanFactory.UpdateAsync(board);
     public async Task DeleteAsync(object id) => await _kanbanFactory.DeleteAsync(id);
+
+    public async Task<List<Kanban>> GetUserKanbansAsync(string userId)
+    {
+        return _kanbanFactory.GetByForeignIdAsync("user_id", userId).Result;
+    }
     #endregion
     
 }

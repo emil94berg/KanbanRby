@@ -2,7 +2,7 @@
 using Supabase.Postgrest;
 using Supabase.Postgrest.Models;
 using Client = Supabase.Client;
-using KanbanRby.Services.Interfaces;
+using KanbanRby.Services.Interfaces;  
 
 namespace KanbanRby.Factories;
 
@@ -60,5 +60,16 @@ public class CrudFactory<TModel> : ICrudFactory<TModel> where TModel : BaseModel
             .From<TModel>()
             .Filter("id", Constants.Operator.Equals, id.ToString()!)
             .Delete();
+    }
+    public async Task<List<TModel>> GetByForeignIdAsync(string fk, object id)
+    {
+        var client = await GetClient();
+        var response = await client
+            .From<TModel>()
+            .Select("*")
+            .Filter(fk, Constants.Operator.Equals, id)
+            .Get();
+
+        return response.Models;
     }
 }

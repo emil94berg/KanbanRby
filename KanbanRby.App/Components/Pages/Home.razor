@@ -2,6 +2,7 @@
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
 @using Task = Task
 @inject ISupabaseService Supabase
 @inject IKanbanBoardService KanbanService
@@ -12,7 +13,6 @@
 
 @if (_boards == null)
 {
-    //TODO 
     <strong>Loading...</strong>
 }
 else if (!_boards.Any())
@@ -92,13 +92,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        
         _selectedBoardId = 1;
-        _boards = await KanbanService.GetAllAsync();
+        if (UserSession.CurrentUser != null)
+        {
+            _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
+        }
+        else
+        {
+            _boards = await KanbanService.GetAllAsync();
+        }
+        
         if (_boards.Any())
         {
             SelectedBoardId = _boards.First().Id;
         }
-
         UserSession.OnChange += StateHasChanged;
         await UserSession.RefreshUserAsync();
     }
