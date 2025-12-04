@@ -35,7 +35,7 @@ public class KanbanBoardService : IKanbanBoardService
 
     public async Task<List<Kanban>> GetUserKanbansAsync(string userId)
     {
-        return _kanbanFactory.GetByForeignIdAsync("user_id", userId).Result;
+        return await _kanbanFactory.GetByForeignIdAsync("user_id", userId);
     }
     #endregion
     

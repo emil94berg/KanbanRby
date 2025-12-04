@@ -22,7 +22,7 @@ else if (!_boards.Any())
 else
 {
     <h1>@_selectedBoard?.Name</h1>
-    @if (UserSession.CurrentUser != null)
+    @if (IsLoggedIn)
     {
         @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
         {
@@ -72,6 +72,7 @@ else
 @code {
     private List<Kanban> _boards;
     private Kanban? _selectedBoard;
+    private bool IsLoggedIn;
     
 
     private int _selectedBoardId;
@@ -88,14 +89,17 @@ else
             }
         }
 
-    }
+    } 
 
+    
     protected override async Task OnInitializedAsync()
     {
-        
+        await UserSession.RefreshUserAsync();
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
         _selectedBoardId = 1;
         if (UserSession.CurrentUser != null)
         {
+            _boards = new List<Kanban>();
             _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
         }
         else
@@ -108,7 +112,6 @@ else
             SelectedBoardId = _boards.First().Id;
         }
         UserSession.OnChange += StateHasChanged;
-        await UserSession.RefreshUserAsync();
     }
 
     public void Dispose()
