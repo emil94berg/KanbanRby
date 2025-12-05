@@ -6,9 +6,7 @@ using Supabase.Gotrue;
 using Supabase;
 using Client = Supabase.Client;
 
-
 namespace KanbanRby.Services;
-
 
 public class SupabaseAuthService : ISupabaseAuthService
 {

@@ -9,4 +9,5 @@ public interface ICrudFactory<TModel> where TModel : BaseModel, new()
     Task<TModel> CreateAsync(TModel model);
     Task<TModel> UpdateAsync(TModel model);
     Task DeleteAsync(object id);
+    Task<List<TModel>> GetByForeignIdAsync(string fk, object id);
 }
