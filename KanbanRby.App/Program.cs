@@ -19,6 +19,7 @@ builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 builder.Services.AddScoped<IUserSession, UserSession>();
 
 
+builder.Services.AddScoped<ICardManagementService, CardManagementService>();
 builder.Services.AddScoped(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
 
