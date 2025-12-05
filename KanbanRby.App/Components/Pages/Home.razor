@@ -1,16 +1,18 @@
 ﻿@page "/"
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
+@using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
 @using Task = Task
 @inject ISupabaseService Supabase
 @inject IKanbanBoardService KanbanService
+@inject IUserSession UserSession
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
 @if (_boards == null)
 {
-    //TODO 
     <strong>Loading...</strong>
 }
 else if (!_boards.Any())
@@ -20,6 +22,19 @@ else if (!_boards.Any())
 else
 {
     <h1>@_selectedBoard?.Name</h1>
+    @if (IsLoggedIn)
+    {
+        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
+        {
+            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
+        }
+        else
+        {
+            <h1>@UserSession.CurrentUser.Email</h1>
+        }
+        
+    }
+    
 
     
     <select class="form-select" @bind="SelectedBoardId">
@@ -57,6 +72,7 @@ else
 @code {
     private List<Kanban> _boards;
     private Kanban? _selectedBoard;
+    private bool IsLoggedIn;
     
 
     private int _selectedBoardId;
@@ -73,16 +89,34 @@ else
             }
         }
 
-    }
+    } 
 
+    
     protected override async Task OnInitializedAsync()
     {
+        await UserSession.RefreshUserAsync();
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
         _selectedBoardId = 1;
-        _boards = await KanbanService.GetAllAsync();
+        if (UserSession.CurrentUser != null)
+        {
+            _boards = new List<Kanban>();
+            _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
+        }
+        else
+        {
+            _boards = await KanbanService.GetAllAsync();
+        }
+        
         if (_boards.Any())
         {
             SelectedBoardId = _boards.First().Id;
-        } 
+        }
+        UserSession.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserSession.OnChange -= StateHasChanged;
     }
 }
 
