@@ -69,7 +69,7 @@ public class CrudFactory<TModel> : ICrudFactory<TModel> where TModel : BaseModel
             .Select("*")
             .Filter(fk, Constants.Operator.Equals, id)
             .Get();
-
+        
         return response.Models;
     }
 }

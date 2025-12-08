@@ -52,6 +52,11 @@ public class CardManagementService : ICardManagementService
         return getAllCardsOfColumn;
     }
 
+    public async Task<List<Card>> GetAllCardsByColumnIdAsync(int columnId)
+    {
+        return await _cardFactory.GetByForeignIdAsync("column_id", columnId);
+    }
+
     public async Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId)
     {
         var card = await _cardFactory.GetByIdAsync(cardId); 

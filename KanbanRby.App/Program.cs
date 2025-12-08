@@ -18,7 +18,8 @@ builder.Services.AddScoped<IKanbanBoardService, KanbanBoardService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 builder.Services.AddScoped<IUserSession, UserSession>();
 
-
+builder.Services.AddScoped<IColumnManagerService, ColumnManagementService>();
+builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();
 builder.Services.AddScoped<ICardManagementService, CardManagementService>();
 builder.Services.AddScoped(typeof(ICrudFactory<>), typeof(CrudFactory<>));
 var app = builder.Build();
