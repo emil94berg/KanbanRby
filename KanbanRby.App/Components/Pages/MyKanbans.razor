@@ -103,6 +103,7 @@ else
             {
                 _selectedBoardId = value;
                 _selectedBoard = _boards.SingleOrDefault(b => b.Id == _selectedBoardId);
+                _ = ReloadPage();
             }
         }
 
@@ -129,6 +130,11 @@ else
         }
     }
 
+    private async Task ReloadPage()
+    {
+        await LoadColumnsFromSelectedBoard();
+        StateHasChanged();
+    }
     protected override async Task OnInitializedAsync()
     {
         await UserSession.RefreshUserAsync();
