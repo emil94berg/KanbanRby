@@ -21,11 +21,7 @@ public class TaskManagementService : ITaskManagementService
 
     public async Task<List<Models.Task>> GetTasksByCardId(int cardId)
     {
-        var allTasks = await _taskFactory.GetAllAsync();
-        return allTasks
-            .Where(t => t.CardId == cardId)
-            .OrderBy(c => c)
-            .ToList();
+        return await _taskFactory.GetByForeignIdAsync("card_id", cardId);
     }
 
     public async Task<Models.Task> CreateTaskAsync(string name)

@@ -2,9 +2,12 @@
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using TaskModel = KanbanRby.Models.Task
 @using Task = Task
 @inject IKanbanBoardService KanbanService
 @inject IColumnManagerService ColumnService
+@inject ICardManagementService CardService
+@inject ITaskManagementService TaskService
 @inject IUserSession UserSession
 @rendermode InteractiveServer
 
@@ -52,6 +55,24 @@ else
             {
                 <div>
                     <strong>@column.Name</strong>
+                    @if (_columnCards.TryGetValue(column.Id, out var cards))
+                    {
+                        @foreach (var card in cards)
+                        {
+                            <div class="card">
+                                <p>@card.Name</p>
+                                @if (_cardTasks.TryGetValue(card.Id,  out var tasks))
+                                {
+                                    @foreach (var task in tasks)
+                                    {
+                                        <div class="task">
+                                            <p>@task.Name</p>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    }
                 </div>
             }
         }
@@ -65,6 +86,8 @@ else
 @code {
     private List<Kanban> _boards;
     private List<Column> _columns = new();
+    private Dictionary<int ,List<Card>> _columnCards = new();
+    private Dictionary<int, List<TaskModel>> _cardTasks = new();
     private Kanban? _selectedBoard;
     private bool IsLoggedIn;
 
@@ -90,14 +113,19 @@ else
         if (_selectedBoard != null)
         {
             _columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
-        }
-    }
-
-    private async Task LoadCardsFromSelectedBoard()
-    {
-        if (_selectedBoard != null && _columns.Any())
-        {
-               
+            _columnCards.Clear();
+            _cardTasks.Clear();
+            foreach (var column in _columns)
+            {
+                var cards = await CardService.GetAllCardsByColumnIdAsync(column.Id);
+                _columnCards[column.Id] = cards;
+                foreach (var card in cards)
+                {
+                    var tasks = await TaskService.GetTasksByCardId(card.Id);
+                    _cardTasks[card.Id] = tasks;
+                }
+                
+            }
         }
     }
 

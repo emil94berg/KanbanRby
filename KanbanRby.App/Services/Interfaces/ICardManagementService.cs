@@ -10,6 +10,7 @@ public interface ICardManagementService
     Task DeleteCardByIdAsync(int id);
     Task<Card> UpdateCardAsync(Card card);
     Task<List<Card>> GetAllCardsAsync(int columnId);
+    Task<List<Card>> GetAllCardsByColumnIdAsync(int columnId);
     Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId);
     Task ChangeOrderOfCardsAsync(int cardId, int intChange, List<Card> cards);
     Task ReorderCardsInColumnAsync(int columnId);
