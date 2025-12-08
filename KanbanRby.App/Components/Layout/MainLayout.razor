@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
-@using KanbanRby.Components.Pages
+﻿@using KanbanRby.Sessions.Interfaces
+@inherits LayoutComponentBase
+@inject IUserSession UserSession
 
 <div class="page">
     <div class="sidebar">
@@ -7,8 +8,15 @@
     </div>
 
     <main>
-        <div class="top-row px-4, nav-link">
-            <a href="login">Login</a>
+        <div class="top-row px-4 nav-link">
+            @if (!isLoggedIn)
+            {
+                <a href="login">Login</a>
+            }
+            else
+            {
+                <button class="btn btn-danger" @onclick="UserLoggedOut">Logout</button>
+            }
         </div>
 
         <article class="content px-4">
@@ -17,8 +25,34 @@
     </main>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code{
+    bool isLoggedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserSession.OnChange += SessionChanged; 
+        isLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+    
+    private async void SessionChanged()
+    {
+        await UpdateLoginState();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateLoginState()
+    {
+         isLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+
+    private async Task UserLoggedOut()
+    {
+        await UserSession.LogoutAsync(); 
+        Console.WriteLine("UserLoggedOut triggered.");
+    }
+    
+    public void Dispose()
+    {
+        UserSession.OnChange -= SessionChanged;
+    }
+}

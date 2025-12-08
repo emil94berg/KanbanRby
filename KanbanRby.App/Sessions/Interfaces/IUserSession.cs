@@ -8,5 +8,5 @@ public interface IUserSession
     event Action? OnChange;
     Task RefreshUserAsync();
     Task<bool> IsLoggedInAsync();
-    
+    Task LogoutAsync();
 }
