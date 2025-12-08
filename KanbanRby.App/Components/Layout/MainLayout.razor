@@ -9,14 +9,7 @@
 
     <main>
         <div class="top-row px-4 nav-link">
-            @if (!isLoggedIn)
-            {
-                <a href="login">Login</a>
-            }
-            else
-            {
-                <button class="btn btn-danger" @onclick="UserLoggedOut">Logout</button>
-            }
+            <LoginUserUI />
         </div>
 
         <article class="content px-4">
@@ -25,34 +18,6 @@
     </main>
 </div>
 
-@code{
-    bool isLoggedIn = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        UserSession.OnChange += SessionChanged; 
-        isLoggedIn = await UserSession.IsLoggedInAsync();
-    }
+@code {
     
-    private async void SessionChanged()
-    {
-        await UpdateLoginState();
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task UpdateLoginState()
-    {
-         isLoggedIn = await UserSession.IsLoggedInAsync();
-    }
-
-    private async Task UserLoggedOut()
-    {
-        await UserSession.LogoutAsync(); 
-        Console.WriteLine("UserLoggedOut triggered.");
-    }
-    
-    public void Dispose()
-    {
-        UserSession.OnChange -= SessionChanged;
-    }
 }

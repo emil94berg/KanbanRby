@@ -31,6 +31,7 @@ public class UserSession : IUserSession
     public async Task LogoutAsync()
     {
         await _supabaseAuthService.LogoutAsync();
+        NotifyStateChanged();
     }
     
     private void NotifyStateChanged() => OnChange?.Invoke();
