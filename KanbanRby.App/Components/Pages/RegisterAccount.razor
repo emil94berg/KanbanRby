@@ -8,7 +8,7 @@
 @rendermode InteractiveServer
 
 <h3>RegisterAccount</h3>
-<EditForm Model="@_loginModel" OnValidSubmit="@CreateAccount" FormName="CreateAccountForm">
+<EditForm Model="@_loginModel" OnValidSubmit="@CreateAccount" FormName="CreateAccountForm" class="loginContainer">
     <div>
         <label>Email: </label>
         <InputText @bind-Value="@_loginModel.Email"></InputText>

@@ -96,6 +96,28 @@ h1:focus {
     padding: 2px;
 }
 
+.loginContainer{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: lightblue;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 20px;
+    gap: 20px;
+}
+.loginContainer div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.loginContainer button:hover{
+    background-color: cornflowerblue;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+
+
 /*.cardContainer{*/
 /*    display: grid;*/
 /*    grid-template-rows: auto 1fr;*/
