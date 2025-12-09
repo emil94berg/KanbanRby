@@ -6,6 +6,12 @@
 
 @if (isLoggedIn)
 {
+    var displayName = UserSession.CurrentUser.UserMetadata.ContainsKey("display_name") && 
+                      UserSession.CurrentUser.UserMetadata["display_name"] != null
+        ? UserSession.CurrentUser.UserMetadata["display_name"].ToString()
+        : UserSession.CurrentUser.Email;
+    
+    <p class="mb-0">User: @displayName</p>
     <button class="btn btn-danger" @onclick="UserLoggedOut">Logout</button>
 }
 else if (!isLoggedIn)
