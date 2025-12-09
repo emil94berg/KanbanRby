@@ -5,7 +5,8 @@
 @using Task = System.Threading.Tasks.Task
 @inject ISupabaseAuthService SupabaseAuth
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
+
+
 
 <h3>RegisterAccount</h3>
 <EditForm Model="@_loginModel" OnValidSubmit="@CreateAccount" FormName="CreateAccountForm" class="loginContainer">
@@ -29,8 +30,12 @@
 </EditForm>
 
 @code {
+  
     private LoginModel _loginModel { get; set; }
     public string ConfirmPassword { get; set; }
+
+    
+    
     
     protected override void OnInitialized()
     {
@@ -45,7 +50,7 @@
             await SupabaseAuth.RegisterNewAccountAsync(_loginModel.Email, _loginModel.Password);
             await SupabaseAuth.LoginUserAsync(_loginModel.Email, _loginModel.Password);
             await SupabaseAuth.SetDisplayName(_loginModel.DisplayName);
-            NavigationManager.NavigateTo("/");
+            
         }
         
     }

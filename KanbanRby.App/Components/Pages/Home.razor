@@ -9,7 +9,10 @@
 @inject IUserSession UserSession
 @rendermode InteractiveServer
 
+
+
 <PageTitle>Home</PageTitle>
+
 
 @if (_boards == null)
 {
@@ -21,6 +24,9 @@ else if (!_boards.Any())
 }
 else
 {
+    
+        
+    
     <h1>@_selectedBoard?.Name</h1>
     @if (IsLoggedIn)
     {
@@ -35,8 +41,6 @@ else
         
     }
     
-
-    
     <select class="form-select" @bind="SelectedBoardId">
         @foreach (var board in _boards)
         {
@@ -49,6 +53,7 @@ else
 }
 
 @code {
+    
     private List<Kanban> _boards;
     private Kanban? _selectedBoard;
     private bool IsLoggedIn;
@@ -68,8 +73,9 @@ else
             }
         }
 
-    } 
+    }
 
+    
     
     protected override async Task OnInitializedAsync()
     {
@@ -97,5 +103,7 @@ else
     {
         UserSession.OnChange -= StateHasChanged;
     }
+
+   
 }
 
