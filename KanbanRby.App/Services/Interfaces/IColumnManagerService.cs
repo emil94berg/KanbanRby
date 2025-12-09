@@ -8,7 +8,7 @@ public interface IColumnManagerService
     Task<List<Column>> GetAllAsync();
     Task<Column> GetByIdAsync(int id);
     Task<List<Column>> GetColumnsByKanbanIdAsync(int kanbanId);
-    Task<Column> CreateColumnAsync(string name, string description);
+    Task<Column> CreateColumnAsync(string name, string description, int boardId);
     Task<Column> UpdateColumnAsync(Column column);
     Task DeleteColumnAsync(int columnId);
 }

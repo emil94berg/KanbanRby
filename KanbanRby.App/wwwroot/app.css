@@ -77,6 +77,8 @@ h1:focus {
     padding: 10px;
     font-size: 30px;
     text-align: center;
+    display: flex;
+    flex-direction: column; 
 }
 
 .columnContainer div.card {
@@ -94,6 +96,10 @@ h1:focus {
     text-align: center;
     font-size: 18px;
     padding: 2px;
+}
+
+.columnContainer div button{
+    margin-top: auto;
 }
 
 .loginContainer{

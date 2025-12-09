@@ -4,35 +4,37 @@
 @inject IUserSession UserSession
 @using Services.Interfaces
 @using Task = System.Threading.Tasks.Task
-@inject IKanbanBoardService KanbanService
+@using TaskModel = KanbanRby.Models.Task
+@inject ITaskManagementService TaskService
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new Board</button>
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">+</button>
     @if (isPopupVisible)
     {
         <div class="popup-overlay">
             <div class="popup-content" @onabort:stopPropagation="true">
-                <EditForm Model="@_newKanban" OnValidSubmit="@CreateAndClosePopup" FormName="CreateKanban">
+                <EditForm Model="@_newTask" OnValidSubmit="@CreateAndClosePopup" FormName="CreateTask">
                     <div>
                         <label>Name: </label>
-                        <InputText @bind-Value="@_kanbanName"></InputText>
+                        <InputText @bind-Value="@_taskName"></InputText>
                     </div>
                     <div>
                         <label>Description: </label>
-                        <InputText @bind-Value="@_kanbanDescription"></InputText>
+                        <InputText @bind-Value="@_taskDescription"></InputText>
                     </div>
                     <button type="submit">Save and close</button>
                 </EditForm>
             </div>
         </div>
-    
     }
     @code {
+        [Parameter]
+        public int CardId { get; set; }
         private bool isPopupVisible = false;
-        private Kanban _newKanban = new Kanban();
-        private string _kanbanName;
-        private string _kanbanDescription;
+        private TaskModel _newTask = new TaskModel();
+        private string _taskName;
+        private string _taskDescription;
         private bool IsLoggedIn;
         
         private void ShowPopup()
@@ -45,7 +47,7 @@
             var user = UserSession.CurrentUser;
             try
             {
-                await KanbanService.CreateKanbanAsync(_kanbanName, _kanbanDescription, user.Id);
+                await TaskService.CreateTaskAsync(_taskName, CardId);
             }
             catch(Exception e)
             {
@@ -59,6 +61,5 @@
         {
             IsLoggedIn = await UserSession.IsLoggedInAsync();
         }
-
     }
 }
