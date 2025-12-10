@@ -1,0 +1,183 @@
+﻿@page "/sharedKanbans"
+@using KanbanRby.Components.Popups
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using KanbanRby.Sessions.Interfaces
+@using TaskModel = KanbanRby.Models.Task
+@using Task = Task
+@inject IKanbanBoardService KanbanService
+@inject IColumnManagerService ColumnService
+@inject ICardManagementService CardService
+@inject ITaskManagementService TaskService
+@inject IUserSession UserSession
+@rendermode InteractiveServer
+
+<h3>My Kanbans</h3>
+<CreateKanban></CreateKanban>
+@if (_boards == null)
+{
+    <strong>Loading...</strong>
+}
+else if (!_boards.Any())
+{
+    <p>You have not been invited to any boards yet!</p>
+}
+else
+{
+    
+    <h1>@_selectedBoard?.Name</h1>
+    @if (IsLoggedIn)
+    {
+        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
+        {
+            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
+        }
+        else
+        {
+            <h1>@UserSession.CurrentUser.Email</h1>
+        }
+    }
+
+
+
+    <select class="form-select" @bind="SelectedBoardId">
+        @foreach (var board in _boards)
+        {
+            <option value="@board.Id">
+                @board.Name
+            </option>
+        }
+    </select>
+    <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
+    
+    <div class="columnContainer">
+        @if (_columns.Any())
+        {
+            @foreach (var column in _columns)
+            {
+                <div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>@column.Name</strong>
+                        <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
+                    </div>
+                    @if (_columnCards.TryGetValue(column.Id, out var cards))
+                    {
+                        @foreach (var card in cards)
+                        {
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p style="margin: 0;">@card.Name</p>
+                                    <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
+                                </div>
+                                @if (_cardTasks.TryGetValue(card.Id, out var tasks))
+                                {
+                                    @foreach (var task in tasks)
+                                    {
+                                        <div class="task">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <p style="margin: 0;">@task.Name</p>
+                                                <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
+                            </div>
+                        }
+                    }
+                    <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard>
+                </div>
+                
+            }
+        }
+        else
+        {
+            <p>No Columns found</p>
+        }
+    </div>
+}
+
+@code {
+
+    private List<Kanban> _boards;
+    private List<Column> _columns = new();
+    private Dictionary<int, List<Card>> _columnCards = new();
+    private Dictionary<int, List<TaskModel>> _cardTasks = new();
+    private Kanban? _selectedBoard;
+    private bool IsLoggedIn;
+
+
+    private int _selectedBoardId;
+
+    private int SelectedBoardId
+    {
+        get => _selectedBoardId;
+        set
+        {
+            if (_selectedBoardId != value)
+            {
+                _selectedBoardId = value;
+                _selectedBoard = _boards.SingleOrDefault(b => b.Id == _selectedBoardId);
+                _ = ReloadPage();
+            }
+        }
+
+    }
+
+
+    private async Task LoadColumnsFromSelectedBoard()
+    {
+        if (_selectedBoard != null)
+        {
+            _columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
+            _columnCards.Clear();
+            _cardTasks.Clear();
+            foreach (var column in _columns)
+            {
+                var cards = await CardService.GetAllCardsByColumnIdAsync(column.Id);
+                _columnCards[column.Id] = cards;
+                foreach (var card in cards)
+                {
+                    var tasks = await TaskService.GetTasksByCardId(card.Id);
+                    _cardTasks[card.Id] = tasks;
+                }
+
+            }
+        }
+    }
+
+    private async Task ReloadPage()
+    {
+        await LoadColumnsFromSelectedBoard();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserSession.RefreshUserAsync();
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
+        _selectedBoardId = 1;
+        if (UserSession.CurrentUser != null)
+        {
+            _boards = await KanbanService.GetSharedKanbansAsync(UserSession.CurrentUser.Id);
+        }
+        else
+        {
+            _boards = await KanbanService.GetAllAsync();
+        }
+
+        if (_boards.Any())
+        {
+            SelectedBoardId = _boards.First().Id;
+            await LoadColumnsFromSelectedBoard();
+        }
+
+        UserSession.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserSession.OnChange -= StateHasChanged;
+    }
+
+}

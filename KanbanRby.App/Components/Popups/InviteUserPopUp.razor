@@ -24,7 +24,7 @@
                     }
                 </select>
                 <button class="btn btn-secondary" @onclick="HidePopUp">Close</button>
-                <button class="btn btn-secondary" @onclick="InviteSelectedUser(@userId, selectedKanban)">Invite</button>
+                <button class="btn btn-success" @onclick="() => InviteSelectedUser(userId, selectedKanban)">Invite</button>
             </div>
         </div>
     }
