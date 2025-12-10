@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using KanbanRby.Components;
 using KanbanRby.Factories;
 using KanbanRby.Factories.Interfaces;
@@ -5,12 +6,16 @@ using KanbanRby.Services.Interfaces;
 using KanbanRby.Services;
 using KanbanRby.Sessions;
 using KanbanRby.Sessions.Interfaces;
+using Blazored.Modal;
+using Blazored.Modal.Services;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 // Services
 builder.Services.AddSingleton<ISupabaseService, SupabaseService>();

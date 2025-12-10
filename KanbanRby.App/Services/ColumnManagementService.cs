@@ -25,12 +25,13 @@ public class ColumnManagementService : IColumnManagerService
         return await _columnFactory.GetByForeignIdAsync("kanban_id", kanbanId);
     }
 
-    public async Task<Column> CreateColumnAsync(string name, string description)
+    public async Task<Column> CreateColumnAsync(string name, string description, int boardId)
     {
         var newColumn = new Column()
         {
             Name = name,
-            Description = description
+            Description = description,
+            KanbanId = boardId
         };
         var createdColumn = await _columnFactory.CreateAsync(newColumn);
         return createdColumn;

@@ -37,9 +37,10 @@ public class KanbanBoard_Test : IAsyncLifetime
         // Arrange
         var name = "Test Kanban";
         var description = "Created through integration test";
+        var usedId = new Guid().ToString();
         
         // Act
-        var result = await _kanbanBoardService.CreateKanbanAsync(name, description);
+        var result = await _kanbanBoardService.CreateKanbanAsync(name, description, usedId);
         
         // Assert
         Assert.NotNull(result);

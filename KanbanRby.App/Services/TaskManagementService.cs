@@ -24,11 +24,12 @@ public class TaskManagementService : ITaskManagementService
         return await _taskFactory.GetByForeignIdAsync("card_id", cardId);
     }
 
-    public async Task<Models.Task> CreateTaskAsync(string name)
+    public async Task<Models.Task> CreateTaskAsync(string name, int cardId)
     {
         var newTask = new Models.Task()
         {
-            Name = name
+            Name = name,
+            CardId = cardId
         };
         
         var createdTask = await _taskFactory.CreateAsync(newTask);

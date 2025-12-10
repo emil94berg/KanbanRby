@@ -1,0 +1,69 @@
+﻿@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ICardManagementService CardService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new card</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                <EditForm Model="@_newCard" OnValidSubmit="@CreateAndClosePopup" FormName="CreateCard">
+                    <div>
+                        <label>Name: </label>
+                        <InputText @bind-Value="@_cardName"></InputText>
+                    </div>
+                    <div>
+                        <label>Description: </label>
+                        <InputText @bind-Value="@_cardDescription"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
+                </EditForm>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int ColumnId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnCreate { get; set; }
+        
+        private bool isPopupVisible = false;
+        private Column _newCard = new Column();
+        private string _cardName;
+        private string _cardDescription;
+        private bool IsLoggedIn;
+        
+        private void ShowPopup()
+        {
+            isPopupVisible = true;
+        }
+
+        private async Task CreateAndClosePopup()
+        {
+            var user = UserSession.CurrentUser;
+            try
+            {
+                await CardService.CreateCardAsync(_cardName, _cardDescription, ColumnId);
+                await OnCreate.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}
