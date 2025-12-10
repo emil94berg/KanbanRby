@@ -15,7 +15,7 @@ public class Column : BaseModel
     public int KanbanId { get; set; }
     
     [Column("name")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
     
     [Column("description")]
     public string? Description { get; set; }

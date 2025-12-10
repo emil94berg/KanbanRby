@@ -8,10 +8,12 @@ namespace KanbanRby.Services;
 public class KanbanBoardService : IKanbanBoardService
 {
     private readonly ICrudFactory<Kanban> _kanbanFactory;
+    private readonly ICrudFactory<KanbanUser> _kanbanUserFactory;
 
-    public KanbanBoardService(ICrudFactory<Kanban> kanbanFactory)
+    public KanbanBoardService(ICrudFactory<Kanban> kanbanFactory, ICrudFactory<KanbanUser> kanbanUserFactory)
     {
         _kanbanFactory = kanbanFactory;
+        _kanbanUserFactory = kanbanUserFactory;
     }
     
     #region CRUD Operations
@@ -19,12 +21,14 @@ public class KanbanBoardService : IKanbanBoardService
     
     public async Task<Kanban?> GetByIdAsync(int id) => await _kanbanFactory.GetByIdAsync(id);
     
-    public async Task<Kanban> CreateKanbanAsync(string name, string description)
+    public async Task<Kanban> CreateKanbanAsync(string name, string description, string userId)
     {
         var newBoard = new Kanban()
         {
             Name = name,
-            Description = description
+            Description = description,
+            UserId = userId,
+            CreatedAt = DateTime.Now
         };
         var createdBoard = await _kanbanFactory.CreateAsync(newBoard);
         return createdBoard;
@@ -36,6 +40,15 @@ public class KanbanBoardService : IKanbanBoardService
     public async Task<List<Kanban>> GetUserKanbansAsync(string userId)
     {
         return await _kanbanFactory.GetByForeignIdAsync("user_id", userId);
+    }
+
+    public async Task<List<Kanban>> GetSharedKanbansAsync(string userId)
+    {
+        var kanbanUsers = await _kanbanUserFactory.GetByForeignIdAsync("user_id", userId);
+        return kanbanUsers
+            .Where(ku => ku.KanbanDetails != null)
+            .Select(ku => ku.KanbanDetails)
+            .ToList();
     }
     #endregion
     

@@ -1,8 +1,16 @@
 ﻿@page "/"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
+@using Task = Task
+@inject ISupabaseService Supabase
+@inject IKanbanBoardService KanbanService
 @inject IUserSession UserSession
 @inject NavigationManager NavManager
 @rendermode InteractiveServer
+
+
 
 <PageTitle>Home</PageTitle>
 

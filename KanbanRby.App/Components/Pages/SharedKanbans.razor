@@ -1,4 +1,4 @@
-﻿@page "/myKanbans"
+﻿@page "/sharedKanbans"
 @using KanbanRby.Components.Popups
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
@@ -20,7 +20,7 @@
 }
 else if (!_boards.Any())
 {
-    <p>There are no boards made yet!</p>
+    <p>You have not been invited to any boards yet!</p>
 }
 else
 {
@@ -49,8 +49,6 @@ else
         }
     </select>
     <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
-    
-    <InviteUserPopUp selectedKanban="@_selectedBoard"/>
     
     <div class="columnContainer">
         @if (_columns.Any())
@@ -100,10 +98,10 @@ else
 }
 
 @code {
-    
+
     private List<Kanban> _boards;
     private List<Column> _columns = new();
-    private Dictionary<int ,List<Card>> _columnCards = new();
+    private Dictionary<int, List<Card>> _columnCards = new();
     private Dictionary<int, List<TaskModel>> _cardTasks = new();
     private Kanban? _selectedBoard;
     private bool IsLoggedIn;
@@ -125,7 +123,7 @@ else
         }
 
     }
-    
+
 
     private async Task LoadColumnsFromSelectedBoard()
     {
@@ -143,7 +141,7 @@ else
                     var tasks = await TaskService.GetTasksByCardId(card.Id);
                     _cardTasks[card.Id] = tasks;
                 }
-                
+
             }
         }
     }
@@ -153,6 +151,7 @@ else
         await LoadColumnsFromSelectedBoard();
         StateHasChanged();
     }
+
     protected override async Task OnInitializedAsync()
     {
         await UserSession.RefreshUserAsync();
@@ -160,8 +159,7 @@ else
         _selectedBoardId = 1;
         if (UserSession.CurrentUser != null)
         {
-            _boards = new List<Kanban>();
-            _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
+            _boards = await KanbanService.GetSharedKanbansAsync(UserSession.CurrentUser.Id);
         }
         else
         {
@@ -181,4 +179,5 @@ else
     {
         UserSession.OnChange -= StateHasChanged;
     }
+
 }

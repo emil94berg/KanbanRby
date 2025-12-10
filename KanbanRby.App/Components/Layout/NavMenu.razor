@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using KanbanRby.Sessions.Interfaces
+@inject IUserSession UserSession
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Kanban Viewer</a>
     </div>
@@ -19,9 +21,10 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Kanbans
             </NavLink>
         </div>
+        
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+            <NavLink class="nav-link" href="sharedKanbans">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Shared Kanbans
             </NavLink>
         </div>
         

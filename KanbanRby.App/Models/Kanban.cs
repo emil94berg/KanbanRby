@@ -13,12 +13,14 @@ public class Kanban : BaseModel
     public string? UserId { get; set; }
     
     [Column("name")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
     
     [Column("description")]
     public string? Description { get; set; }
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-
+    
+    [Reference(typeof(KanbanUser), ReferenceAttribute.JoinType.Left, foreignKey: "kanban_user")]
+    public List<KanbanUser> KanbanUsers { get; set; }
 }
