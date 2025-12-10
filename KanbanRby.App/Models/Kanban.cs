@@ -20,5 +20,7 @@ public class Kanban : BaseModel
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-
+    
+    [Reference(typeof(KanbanUser), ReferenceAttribute.JoinType.Left, foreignKey: "kanban_user")]
+    public List<KanbanUser> KanbanUsers { get; set; }
 }

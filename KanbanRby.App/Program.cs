@@ -22,6 +22,7 @@ builder.Services.AddSingleton<ISupabaseService, SupabaseService>();
 builder.Services.AddScoped<IKanbanBoardService, KanbanBoardService>();
 builder.Services.AddScoped<ISupabaseAuthService, SupabaseAuthService>();
 builder.Services.AddScoped<IUserSession, UserSession>();
+builder.Services.AddScoped<ISupabaseProfileService, SupabaseProfileService>();
 
 builder.Services.AddScoped<IColumnManagerService, ColumnManagementService>();
 builder.Services.AddScoped<ITaskManagementService, TaskManagementService>();

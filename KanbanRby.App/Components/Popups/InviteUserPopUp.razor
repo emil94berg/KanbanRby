@@ -1,13 +1,27 @@
-﻿@using KanbanRby.Sessions.Interfaces
+﻿@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using KanbanRby.Sessions.Interfaces
+@using Task = System.Threading.Tasks.Task
 @inject IUserSession UserSession
+@inject ISupabaseProfileService ProfileService
+@rendermode InteractiveServer
 
 @if (IsLoggedIn)
 {
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopUp">Invite User</button>
     if (isPopUpVisible)
     {
-        <div class="popup-overlay">
-            <div class="popup-content" @onabort:stopPropagation="true">
-                
+        <div class="popup-overlay" @onclick="HidePopUp">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <label>Search for display name or email: </label>
+                <InputText @bind-Value="searchQuery"></InputText>
+                <select class="form-select" @bind="userId">
+                    @foreach (var user in allProfiles.Where(s =>s.displayName.Contains(searchQuery) || s.email.Contains(searchQuery)))
+                    {
+                        <option @onclick="InviteSelectedUser(@user.id.ToString(), selectedKanban)" value="@user.id">Email: @user.email Display Name: @user.displayName</option>
+                    }
+                </select>
+                <button class="btn btn-secondary" @onclick="HidePopUp">Close</button>
             </div>
         </div>
     }
@@ -16,14 +30,30 @@
 @code {
     private bool IsLoggedIn;
     private bool isPopUpVisible = false;
+    public Guid userId { get; set; }
+    List<PublicProfile> allProfiles;
+    private string searchQuery = "";
+    [Parameter]
+    public Kanban selectedKanban { get; set; }
 
     private void ShowPopUp()
     {
         isPopUpVisible = true;
     }
+
+    private void HidePopUp()
+    {
+        isPopUpVisible = false;
+    }
+
+    private async Task InviteSelectedUser(string userId, Kanban selectedKanban)
+    {
+        
+    }
     
     protected override async Task OnInitializedAsync()
     {
         IsLoggedIn = await UserSession.IsLoggedInAsync();
+        allProfiles = await ProfileService.GetAllProfiles();
     }
 }
