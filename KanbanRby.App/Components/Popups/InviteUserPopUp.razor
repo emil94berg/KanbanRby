@@ -1,0 +1,29 @@
+﻿@using KanbanRby.Sessions.Interfaces
+@inject IUserSession UserSession
+
+@if (IsLoggedIn)
+{
+    if (isPopUpVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private bool IsLoggedIn;
+    private bool isPopUpVisible = false;
+
+    private void ShowPopUp()
+    {
+        isPopUpVisible = true;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+}

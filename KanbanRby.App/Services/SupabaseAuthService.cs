@@ -20,10 +20,19 @@ public class SupabaseAuthService : ISupabaseAuthService
     private async Task<Client> GetClient() => await _supabaseService.GetClientAsync();
    
 
-    public async Task<User> RegisterNewAccountAsync(string email, string password)
+    public async Task<User> RegisterNewAccountAsync(string email, string password, string displayName)
     {
         var client = await GetClient();
-        var result = await client.Auth.SignUp(email, password);
+
+        var options = new SignUpOptions
+        {
+            Data = new Dictionary<string, object>
+            {
+                { "display_name", displayName }
+            }
+        };
+        
+        var result = await client.Auth.SignUp(email, password, options);
         return result.User;
     }
 
