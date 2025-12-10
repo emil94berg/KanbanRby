@@ -1,7 +1,6 @@
 ﻿@using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
-@using Supabase.Gotrue
 @using Task = System.Threading.Tasks.Task
 @inject IUserSession UserSession
 @inject ISupabaseProfileService ProfileService
@@ -16,15 +15,16 @@
         <div class="popup-overlay" @onclick="HidePopUp">
             <div class="popup-content" @onclick:stopPropagation="true">
                 <label>Search for display name or email: </label>
-                <InputText @bind-Value="searchQuery"></InputText>
-                <select class="form-select" @bind="userId">
+                <InputText @bind-Value="searchQuery" @bind-Value:after="OnSearchQueryChanged"></InputText>
+                <select class="form-select" @bind="selectedUserId">
+                    <option value="">-- Select a user --</option>
                     @foreach (var user in allProfiles.Where(s =>s.displayName.Contains(searchQuery) || s.email.Contains(searchQuery)))
                     {
                         <option value="@user.id">Email: @user.email Display Name: @user.displayName</option>
                     }
                 </select>
                 <button class="btn btn-secondary" @onclick="HidePopUp">Close</button>
-                <button class="btn btn-success" @onclick="() => InviteSelectedUser(userId, selectedKanban)">Invite</button>
+                <button class="btn btn-success" @onclick="InviteUser">Invite</button>
             </div>
         </div>
     }
@@ -33,7 +33,7 @@
 @code {
     private bool IsLoggedIn;
     private bool isPopUpVisible = false;
-    public Guid userId { get; set; }
+    private string selectedUserId = "";
     List<PublicProfile> allProfiles;
     private string searchQuery = "";
     [Parameter]
@@ -49,15 +49,30 @@
         isPopUpVisible = false;
     }
 
-    private async Task InviteSelectedUser(Guid userId, Kanban selectedKanban)
+    private void OnSearchQueryChanged()
     {
-        if (userId == Guid.Empty)
+        // Reset selection when search query changes to prevent selecting a user that's no longer visible
+        if (!string.IsNullOrEmpty(selectedUserId) && Guid.TryParse(selectedUserId, out var guid))
         {
-            // Should display a popup so the user knows that invite wasn't sent
+            var filteredUsers = allProfiles.Where(s => s.displayName.Contains(searchQuery) || s.email.Contains(searchQuery)).ToList();
+            if (!filteredUsers.Any(u => u.id == guid))
+            {
+                selectedUserId = "";
+            }
+        }
+    }
+
+    private async Task InviteUser()
+    {
+        if (string.IsNullOrEmpty(selectedUserId) || !Guid.TryParse(selectedUserId, out var userId))
+        {
+            // Should display a popup if something goes wrong
             return;
         }
+        
         var kanbanUserInvite = new KanbanUser() { UserId = userId, KanbanId = selectedKanban.Id};
         await InviteUserService.CreateKanbanUser(kanbanUserInvite);
+        HidePopUp();
     }
     
     protected override async Task OnInitializedAsync()
