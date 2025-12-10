@@ -1,9 +1,11 @@
 ﻿@using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
 @using Task = System.Threading.Tasks.Task
 @inject IUserSession UserSession
 @inject ISupabaseProfileService ProfileService
+@inject IKanbanInviteUserService InviteUserService
 @rendermode InteractiveServer
 
 @if (IsLoggedIn)
@@ -18,10 +20,11 @@
                 <select class="form-select" @bind="userId">
                     @foreach (var user in allProfiles.Where(s =>s.displayName.Contains(searchQuery) || s.email.Contains(searchQuery)))
                     {
-                        <option @onclick="InviteSelectedUser(@user.id.ToString(), selectedKanban)" value="@user.id">Email: @user.email Display Name: @user.displayName</option>
+                        <option value="@user.id">Email: @user.email Display Name: @user.displayName</option>
                     }
                 </select>
                 <button class="btn btn-secondary" @onclick="HidePopUp">Close</button>
+                <button class="btn btn-secondary" @onclick="InviteSelectedUser(@userId, selectedKanban)">Invite</button>
             </div>
         </div>
     }
@@ -46,9 +49,10 @@
         isPopUpVisible = false;
     }
 
-    private async Task InviteSelectedUser(string userId, Kanban selectedKanban)
+    private async Task InviteSelectedUser(Guid userId, Kanban selectedKanban)
     {
-        
+        var kanbanUserInvite = new KanbanUser() { UserId = userId, KanbanId = selectedKanban.Id};
+        await InviteUserService.CreateKanbanUser(kanbanUserInvite);
     }
     
     protected override async Task OnInitializedAsync()
