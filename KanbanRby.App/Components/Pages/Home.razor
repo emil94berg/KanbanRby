@@ -9,12 +9,13 @@
 @* Logged in view *@
 @if (IsLoggedIn)
 {
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Welcome back, @DisplayNameOrEmail!</h1>
-            <p class="col-md-8 fs-4">You are currently signed in. Click below to view and manage your existing Kanban boards.</p>
-            
-            <button class="btn btn-primary btn-lg" @onclick="NavigateToMyKanbans">Go to My Kanbans</button>
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome back, @DisplayNameOrEmail!</h1>
+            <p class="hero-subtitle">You are currently signed in. Click below to view and manage your existing Kanban boards.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToMyKanbans">
+                Go to My Kanbans →
+            </button>
         </div>
     </div>
 }
@@ -22,32 +23,46 @@
 @* Guest/logged out view *@
 else
 {
-    <div class="jumbotron">
-        <h1 class="display-4">Welcome to Kanban Viewer!</h1>
-        <p class="lead">A simple and effective way to manage your tasks using Kanban boards.</p>
-        <hr class="my-4">
+    <div class="home-container">
+        <div class="hero-section">
+            <h1 class="hero-title">Welcome to Kanban Viewer!</h1>
+            <p class="hero-subtitle">A simple and effective way to manage your tasks using Kanban boards.</p>
+        </div>
 
-        <div>
-            <div class="col-md-4">
-                <h2>Track Everything</h2>
-                <p>Visualize your workflow with custom columns. From 'To Do' to 'Done', see where every task stands instantly.</p>
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h2 class="feature-title">Track Everything</h2>
+                <p class="feature-description">Visualize your workflow with custom columns. From 'To Do' to 'Done', see where every task stands instantly.</p>
             </div>
-            <div class="col-md-4">
-                <h2>Collaborate Easily</h2>
-                <p>Invite team members, assign tasks, and keep everyone on the same page. Real-time updates included!</p>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h2 class="feature-title">Collaborate Easily</h2>
+                <p class="feature-description">Invite team members, assign tasks, and keep everyone on the same page. Real-time updates included!</p>
             </div>
         </div>
-        <hr>
 
-        <h3>Get Started in 3 Steps:</h3>
-        <ol>
-            <li>Create an Account: Sign up in seconds using the button below.</li>
-            <li>Create a Board: Set up your first project board and columns.</li>
-            <li>Add Tasks: Start organizing your work and collaborate!</li>
-        </ol>
-        <hr class="my-4">
-        <p>To start organizing your projects, please log in or create an account.</p>
-        <button class="btn btn-primary btn-lg me-2" @onclick="NavigateToRegisterAccount">Create Account</button>
+        <div class="steps-section">
+            <h3 class="steps-title">Get Started in 3 Steps:</h3>
+            <ol class="steps-list">
+                <li class="step-item">
+                    <strong>Create an Account:</strong> Sign up in seconds using the button below.
+                </li>
+                <li class="step-item">
+                    <strong>Create a Board:</strong> Set up your first project board and columns.
+                </li>
+                <li class="step-item">
+                    <strong>Add Tasks:</strong> Start organizing your work and collaborate!
+                </li>
+            </ol>
+        </div>
+
+        <div class="cta-section">
+            <p class="cta-text">To start organizing your projects, please log in or create an account.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToRegisterAccount">
+                Create Account →
+            </button>
+        </div>
     </div>
 }
 
