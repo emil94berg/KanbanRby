@@ -1,0 +1,62 @@
+@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ICardManagementService CardService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveUp" disabled="@(!CanMoveUp)">↑</button>
+    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveDown" disabled="@(!CanMoveDown)">↓</button>
+    
+    @code {
+        [Parameter]
+        public int CardId { get; set; }
+        
+        [Parameter]
+        public int ColumnId { get; set; }
+        
+        [Parameter]
+        public List<Card> ColumnCards { get; set; } = new();
+        
+        [Parameter]
+        public EventCallback OnMoved { get; set; }
+        
+        private bool IsLoggedIn;
+        private bool CanMoveUp => ColumnCards.Any() && ColumnCards.OrderBy(c => c.RowId).First().Id != CardId;
+        private bool CanMoveDown => ColumnCards.Any() && ColumnCards.OrderBy(c => c.RowId).Last().Id != CardId;
+        
+        private async Task MoveUp()
+        {
+            try
+            {
+                await CardService.ChangeOrderOfCardsAsync(CardId, -1, ColumnCards);
+                await OnMoved.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private async Task MoveDown()
+        {
+            try
+            {
+                await CardService.ChangeOrderOfCardsAsync(CardId, 1, ColumnCards);
+                await OnMoved.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

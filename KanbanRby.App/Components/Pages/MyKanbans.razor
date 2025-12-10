@@ -68,6 +68,8 @@ else
                                 <div style="display: flex; justify-content: space-between;">
                                     <p style="margin: 0;">@card.Name</p>
                                     <div>
+                                        <MoveCardInColumn CardId="card.Id" ColumnId="column.Id" ColumnCards="cards" OnMoved="ReloadPage"></MoveCardInColumn>
+                                        <MoveCardBetweenColumns CardId="card.Id" CurrentColumnId="column.Id" BoardId="@SelectedBoardId" OnMoved="ReloadPage"></MoveCardBetweenColumns>
                                         <UpdateCard CardId="card.Id" OnUpdated="ReloadPage"></UpdateCard>
                                         <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
                                     </div>
