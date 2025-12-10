@@ -51,6 +51,11 @@
 
     private async Task InviteSelectedUser(Guid userId, Kanban selectedKanban)
     {
+        if (userId == Guid.Empty)
+        {
+            // Should display a popup so the user knows that invite wasn't sent
+            return;
+        }
         var kanbanUserInvite = new KanbanUser() { UserId = userId, KanbanId = selectedKanban.Id};
         await InviteUserService.CreateKanbanUser(kanbanUserInvite);
     }
