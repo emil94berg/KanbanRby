@@ -16,6 +16,7 @@ public class KanbanBoard_Test : IAsyncLifetime
 {
     private ISupabaseService _supabaseService;
     private IKanbanBoardService _kanbanBoardService;
+    private IKanbanInviteUserService _inviteUserService;
     private List<int> _createdKanbanIds = new();
 
     public async Task InitializeAsync()
@@ -28,7 +29,8 @@ public class KanbanBoard_Test : IAsyncLifetime
         await _supabaseService.GetClientAsync();
         
         var kanbanFactory = new CrudFactory<Kanban>(_supabaseService);
-        _kanbanBoardService = new KanbanBoardService(kanbanFactory);
+        var kanbanUserFactory = new CrudFactory<KanbanUser>(_supabaseService);
+        _kanbanBoardService = new KanbanBoardService(kanbanFactory, kanbanUserFactory);
     }
     
     [Fact]
