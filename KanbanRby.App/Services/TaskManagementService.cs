@@ -26,10 +26,14 @@ public class TaskManagementService : ITaskManagementService
 
     public async Task<Models.Task> CreateTaskAsync(string name, int cardId)
     {
+        var existingTasks = await GetTasksByCardId(cardId);
+        var nextPosition = existingTasks.Any() ? existingTasks.Max(t => t.RowId) + 1 : 0;
+        
         var newTask = new Models.Task()
         {
             Name = name,
-            CardId = cardId
+            CardId = cardId,
+            RowId = nextPosition
         };
         
         var createdTask = await _taskFactory.CreateAsync(newTask);

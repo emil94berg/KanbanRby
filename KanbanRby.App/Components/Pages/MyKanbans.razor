@@ -58,6 +58,7 @@ else
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
                         <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
+                        <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
@@ -66,7 +67,10 @@ else
                             <div class="card">
                                 <div style="display: flex; justify-content: space-between;">
                                     <p style="margin: 0;">@card.Name</p>
-                                    <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
+                                    <div>
+                                        <UpdateCard CardId="card.Id" OnUpdated="ReloadPage"></UpdateCard>
+                                        <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
+                                    </div>
                                 </div>
                                 @if (_cardTasks.TryGetValue(card.Id, out var tasks))
                                 {
@@ -75,6 +79,7 @@ else
                                         <div class="task">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <p style="margin: 0;">@task.Name</p>
+                                                <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
                                                 <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
                                             </div>
                                         </div>
@@ -128,17 +133,18 @@ else
     {
         if (_selectedBoard != null)
         {
-            _columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
+            var columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
+            _columns = columns.OrderBy(c => c.Position).ToList();
             _columnCards.Clear();
             _cardTasks.Clear();
             foreach (var column in _columns)
             {
                 var cards = await CardService.GetAllCardsByColumnIdAsync(column.Id);
-                _columnCards[column.Id] = cards;
+                _columnCards[column.Id] = cards.OrderBy(c => c.RowId).ToList();
                 foreach (var card in cards)
                 {
                     var tasks = await TaskService.GetTasksByCardId(card.Id);
-                    _cardTasks[card.Id] = tasks;
+                    _cardTasks[card.Id] = tasks.OrderBy(t => t.RowId).ToList();
                 }
                 
             }
