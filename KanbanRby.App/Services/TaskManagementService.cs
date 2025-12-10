@@ -21,18 +21,19 @@ public class TaskManagementService : ITaskManagementService
 
     public async Task<List<Models.Task>> GetTasksByCardId(int cardId)
     {
-        var allTasks = await _taskFactory.GetAllAsync();
-        return allTasks
-            .Where(t => t.CardId == cardId)
-            .OrderBy(c => c)
-            .ToList();
+        return await _taskFactory.GetByForeignIdAsync("card_id", cardId);
     }
 
-    public async Task<Models.Task> CreateTaskAsync(string name)
+    public async Task<Models.Task> CreateTaskAsync(string name, int cardId)
     {
+        var existingTasks = await GetTasksByCardId(cardId);
+        var nextPosition = existingTasks.Any() ? existingTasks.Max(t => t.RowId) + 1 : 0;
+        
         var newTask = new Models.Task()
         {
-            Name = name
+            Name = name,
+            CardId = cardId,
+            RowId = nextPosition
         };
         
         var createdTask = await _taskFactory.CreateAsync(newTask);

@@ -1,0 +1,70 @@
+@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@using TaskModel = KanbanRby.Models.Task
+@inject ITaskManagementService TaskService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Update</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                <EditForm Model="@_task" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateTask">
+                    <div>
+                        <label>Name: </label>
+                        <InputText @bind-Value="@_task.Name"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
+                </EditForm>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int TaskId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnUpdated { get; set; }
+        
+        private bool isPopupVisible = false;
+        private bool IsLoggedIn;
+        private TaskModel _task = new();
+        
+        private async Task ShowPopup()
+        {
+            isPopupVisible = true;
+            _task = await TaskService.GetByIdAsync(TaskId);
+            StateHasChanged();
+        }
+
+        private void ClosePopup()
+        {
+            isPopupVisible = false;
+        }
+
+        private async Task UpdateAndClosePopup()
+        {
+            try
+            {
+                await TaskService.UpdateTaskAsync(_task);
+                await OnUpdated.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

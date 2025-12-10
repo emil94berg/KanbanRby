@@ -1,0 +1,69 @@
+﻿@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject IColumnManagerService ColumnService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new column</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                <EditForm Model="@_newColumn" OnValidSubmit="@CreateAndClosePopup" FormName="CreateColumn">
+                    <div>
+                        <label>Name: </label>
+                        <InputText @bind-Value="@_columnName"></InputText>
+                    </div>
+                    <div>
+                        <label>Description: </label>
+                        <InputText @bind-Value="@_columnDescription"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
+                </EditForm>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int BoardId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnCreate { get; set; }
+        
+        private bool isPopupVisible = false;
+        private Column _newColumn = new Column();
+        private string _columnName;
+        private string _columnDescription;
+        private bool IsLoggedIn;
+        
+        private void ShowPopup()
+        {
+            isPopupVisible = true;
+        }
+
+        private async Task CreateAndClosePopup()
+        {
+            var user = UserSession.CurrentUser;
+            try
+            {
+                await ColumnService.CreateColumnAsync(_columnName, _columnDescription, BoardId);
+                await OnCreate.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

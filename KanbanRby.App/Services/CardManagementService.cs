@@ -16,9 +16,10 @@ public class CardManagementService : ICardManagementService
 
     public async Task<Card> CreateCardAsync(string name, string description, int columnId)
     {
-        var cardsInColumn = (await GetAllCardsAsync(columnId)).Count;
-        var rowId = cardsInColumn + 1; 
-        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description,  ColumnId = columnId, RowId = rowId});
+        var existingCards = await GetAllCardsByColumnIdAsync(columnId);
+        var nextPosition = existingCards.Any() ? existingCards.Max(c => c.RowId) + 1 : 0;
+        
+        var newCard = await _cardFactory.CreateAsync(new Card(){Name = name, Description = description,  ColumnId = columnId, RowId = nextPosition});
         return newCard;
     }
     
@@ -50,6 +51,11 @@ public class CardManagementService : ICardManagementService
             }
         }
         return getAllCardsOfColumn;
+    }
+
+    public async Task<List<Card>> GetAllCardsByColumnIdAsync(int columnId)
+    {
+        return await _cardFactory.GetByForeignIdAsync("column_id", columnId);
     }
 
     public async Task MoveCardBetweenColumnsAsync(int cardId, int newColumnId)

@@ -1,0 +1,57 @@
+﻿@using KanbanRby.Components.Pages
+@using KanbanRby.Sessions.Interfaces
+@inject IUserSession UserSession
+@inject NavigationManager NavManager 
+@rendermode InteractiveServer
+
+@if (isLoggedIn)
+{
+    var displayName = UserSession.CurrentUser.UserMetadata.ContainsKey("display_name") && 
+                      UserSession.CurrentUser.UserMetadata["display_name"] != null
+        ? UserSession.CurrentUser.UserMetadata["display_name"].ToString()
+        : UserSession.CurrentUser.Email;
+    
+    <p class="mb-0">User: @displayName</p>
+    <button class="btn btn-danger" @onclick="UserLoggedOut">Logout</button>
+}
+else if (!isLoggedIn)
+{
+    <button class="btn btn-primary" @onclick="@Login">Login</button>
+}
+
+@code {
+    private bool isLoggedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserSession.OnChange += SessionChanged;
+        isLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+
+    private async void SessionChanged()
+    {
+        await UpdateLoginState();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateLoginState()
+    {
+        isLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+
+    private async Task UserLoggedOut()
+    {
+        await UserSession.LogoutAsync();
+        NavManager.NavigateTo("/");
+    }
+
+    private async Task Login()
+    {
+        NavManager.NavigateTo("/login");
+    }
+
+    public void Dispose()
+    {
+        UserSession.OnChange -= SessionChanged;
+    }
+}

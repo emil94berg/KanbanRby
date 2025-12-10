@@ -22,21 +22,20 @@ public class ColumnManagementService : IColumnManagerService
     // Return all columns by kanbanId
     public async Task<List<Column>> GetColumnsByKanbanIdAsync(int kanbanId)
     {
-        var allColumns = await _columnFactory.GetAllAsync();
-        var boardColumns = allColumns
-            .Where(c => c.KanbanId == kanbanId)
-            .OrderBy(c => c)
-            .ToList();
-        
-        return boardColumns;
+        return await _columnFactory.GetByForeignIdAsync("kanban_id", kanbanId);
     }
 
-    public async Task<Column> CreateColumnAsync(string name, string description)
+    public async Task<Column> CreateColumnAsync(string name, string description, int boardId)
     {
+        var existingColumns = await GetColumnsByKanbanIdAsync(boardId);
+        var nextPosition = existingColumns.Any() ? existingColumns.Max(c => c.Position) + 1 : 0;
+        
         var newColumn = new Column()
         {
             Name = name,
-            Description = description
+            Description = description,
+            KanbanId = boardId,
+            Position = nextPosition
         };
         var createdColumn = await _columnFactory.CreateAsync(newColumn);
         return createdColumn;
