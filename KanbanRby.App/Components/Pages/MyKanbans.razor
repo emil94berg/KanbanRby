@@ -48,34 +48,43 @@ else
             </option>
         }
     </select>
-    <CreateColumn BoardId="@SelectedBoardId"></CreateColumn>
+    <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
     <div class="columnContainer">
         @if (_columns.Any())
         {
             @foreach (var column in _columns)
             {
                 <div>
-                    <strong>@column.Name</strong>
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>@column.Name</strong>
+                        <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
+                    </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
                         @foreach (var card in cards)
                         {
                             <div class="card">
-                                <p>@card.Name</p>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p style="margin: 0;">@card.Name</p>
+                                    <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
+                                </div>
                                 @if (_cardTasks.TryGetValue(card.Id, out var tasks))
                                 {
                                     @foreach (var task in tasks)
                                     {
                                         <div class="task">
-                                            <p>@task.Name</p>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <p style="margin: 0;">@task.Name</p>
+                                                <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                            </div>
                                         </div>
                                     }
                                 }
-                                <CreateTask CardId="card.Id"></CreateTask>
+                                <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
                             </div>
                         }
                     }
-                    <CreateCard ColumnId="column.Id"></CreateCard>
+                    <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard>
                 </div>
                 
             }

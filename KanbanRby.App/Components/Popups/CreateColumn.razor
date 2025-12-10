@@ -30,6 +30,10 @@
     @code {
         [Parameter]
         public int BoardId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnCreate { get; set; }
+        
         private bool isPopupVisible = false;
         private Column _newColumn = new Column();
         private string _columnName;
@@ -47,6 +51,7 @@
             try
             {
                 await ColumnService.CreateColumnAsync(_columnName, _columnDescription, BoardId);
+                await OnCreate.InvokeAsync();
             }
             catch(Exception e)
             {

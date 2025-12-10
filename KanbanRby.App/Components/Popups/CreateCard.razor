@@ -30,6 +30,10 @@
     @code {
         [Parameter]
         public int ColumnId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnCreate { get; set; }
+        
         private bool isPopupVisible = false;
         private Column _newCard = new Column();
         private string _cardName;
@@ -47,6 +51,7 @@
             try
             {
                 await CardService.CreateCardAsync(_cardName, _cardDescription, ColumnId);
+                await OnCreate.InvokeAsync();
             }
             catch(Exception e)
             {
