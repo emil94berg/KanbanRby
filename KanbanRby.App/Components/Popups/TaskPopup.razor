@@ -1,0 +1,43 @@
+﻿@using KanbanRby.Services.Interfaces
+@inject ITaskManagementService TaskService
+
+@if (Visible)
+{
+    <div class="popup-overlay">
+        <div class="popup-content">
+            <h3>Create Task</h3>
+
+            <EditForm Model="@this" OnValidSubmit="SaveTask">
+                <label>Name</label>
+                <InputText @bind-Value="TaskName" />
+
+                <label>Description</label>
+                <InputText @bind-Value="TaskDescription" />
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" @onclick="Close">Cancel</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public int CardId { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+    public string TaskName { get; set; } = "";
+    public string TaskDescription { get; set; } = "";
+
+    private async Task SaveTask()
+    {
+        await TaskService.CreateTaskAsync(TaskName, CardId);
+        await OnSaved.InvokeAsync();
+        await VisibleChanged.InvokeAsync(false);
+    }
+
+    private async Task Close()
+    {
+        await VisibleChanged.InvokeAsync(false);
+    }
+}
