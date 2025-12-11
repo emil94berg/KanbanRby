@@ -31,6 +31,11 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATask_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F4d431e535966d3e8d58aed86698f4938fdfbde11da876f5c3a222aa8c29b1_003FTask_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATask_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fd965b427610645219c622d7764a327cff49910_003F71_003F2565b551_003FTask_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AThrowHelper_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F228bff957d5b9f32cfbedd8bf82a5d3e862ec3e051593a67913b95ae288287_003FThrowHelper_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=136a6ed0_002D5dc2_002D440c_002D8e93_002D813151b23527/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldAddColumnToSupabaseAsync #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1d2e1ea3_002D4bfa_002D4c9b_002Da344_002D5a04fd49bea4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Test_SupabaseLoginSetsCurrentUser #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.SupabaseAuthServiceTest.Test_SupabaseLoginSetsCurrentUser&lt;/TestId&gt;&#xD;
@@ -41,8 +46,32 @@
     &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.SupabaseAuthServiceTest.TestLogin&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=67dc9def_002Dc22e_002D49ef_002Dbd24_002D5b239bd6f151/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldAddColumnToSupabaseAsync" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=782789db_002D10e9_002D4a5e_002Da491_002Dff4d5a0d8c35/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldAddColumnToSupabaseAsync #5" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d1ea21eb_002D792c_002D402c_002D9711_002Daee7ab78c27b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldAddColumnToSupabaseAsync #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d82fbd23_002D642e_002D4ace_002D8862_002D96a8b008e16a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test_SupabaseLoginSetsCurrentUser" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.TaskTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.CardManagement_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.KanbanBoard_Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldUpdateColumnFromSupabaseAsync&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldGetASpecificColumnBasedOnKanbanIdAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fc06fdf0_002D5162_002D4168_002D9905_002Df10c4c3a95b5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldAddColumnToSupabaseAsync #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.Column_Test.ShouldAddColumnToSupabaseAsync&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
