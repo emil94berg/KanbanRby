@@ -13,7 +13,7 @@
 @rendermode InteractiveServer
 
 
-<CreateKanban></CreateKanban>
+<CreateKanban OnCreate="ReloadPage"></CreateKanban>
 @if (_boards == null)
 {
     <strong>Loading...</strong>
@@ -74,8 +74,10 @@ else
                                         <div class="task">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <p style="margin: 0;">@task.Name</p>
-                                                <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
-                                                <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                <div>
+                                                    <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
+                                                    <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                </div>
                                             </div>
                                         </div>
                                     }
@@ -148,6 +150,7 @@ else
 
     private async Task ReloadPage()
     {
+        _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
         await LoadColumnsFromSelectedBoard();
         StateHasChanged();
     }
