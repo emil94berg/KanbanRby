@@ -36,7 +36,6 @@
             {
                 await CardService.ChangeOrderOfCardsAsync(CardId, -1, ColumnCards);
                 await OnMoved.InvokeAsync();
-                await Task.Delay(1500);
             }
             catch(Exception e)
             {

@@ -27,6 +27,8 @@
 @code {
     [Parameter]
     public int CardId { get; set; }
+    [Parameter]
+    public int ColumnId { get; set; }
     
     [Parameter]
     public EventCallback OnDeleted { get; set; }
@@ -51,6 +53,7 @@
         try
         {
             await CardService.DeleteCardByIdAsync(CardId);
+            await CardService.ReorderCardsInColumnAsync(ColumnId);
             await OnDeleted.InvokeAsync();
         }
         catch(Exception e)
