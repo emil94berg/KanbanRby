@@ -42,7 +42,7 @@ else if (!isLoggedIn)
     private async Task UserLoggedOut()
     {
         await UserSession.LogoutAsync();
-        NavManager.NavigateTo("/");
+        NavManager.NavigateTo("/", forceLoad: true);
     }
 
     private async Task Login()

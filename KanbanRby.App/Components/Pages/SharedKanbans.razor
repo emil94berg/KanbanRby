@@ -1,4 +1,4 @@
-﻿@page "/myKanbans"
+﻿@page "/sharedKanbans"
 @using KanbanRby.Components.Popups
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
@@ -20,7 +20,7 @@
 }
 else if (!_boards.Any())
 {
-    <p>There are no boards made yet!</p>
+    <p>You have not been invited to any boards yet!</p>
 }
 else
 {
@@ -50,8 +50,6 @@ else
     </select>
     <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
     
-    <InviteUserPopUp selectedKanban="@_selectedBoard"/>
-    
     <div class="columnContainer">
         @if (_columns.Any())
         {
@@ -61,7 +59,6 @@ else
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
                         <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
-                        <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
@@ -70,12 +67,7 @@ else
                             <div class="card">
                                 <div style="display: flex; justify-content: space-between;">
                                     <p style="margin: 0;">@card.Name</p>
-                                    <div>
-                                        <MoveCardInColumn CardId="card.Id" ColumnId="column.Id" ColumnCards="cards" OnMoved="ReloadPage"></MoveCardInColumn>
-                                        <MoveCardBetweenColumns CardId="card.Id" CurrentColumnId="column.Id" BoardId="@SelectedBoardId" OnMoved="ReloadPage"></MoveCardBetweenColumns>
-                                        <UpdateCard CardId="card.Id" OnUpdated="ReloadPage"></UpdateCard>
-                                        <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
-                                    </div>
+                                    <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
                                 </div>
                                 @if (_cardTasks.TryGetValue(card.Id, out var tasks))
                                 {
@@ -84,7 +76,6 @@ else
                                         <div class="task">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <p style="margin: 0;">@task.Name</p>
-                                                <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
                                                 <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
                                             </div>
                                         </div>
@@ -107,10 +98,10 @@ else
 }
 
 @code {
-    
+
     private List<Kanban> _boards;
     private List<Column> _columns = new();
-    private Dictionary<int ,List<Card>> _columnCards = new();
+    private Dictionary<int, List<Card>> _columnCards = new();
     private Dictionary<int, List<TaskModel>> _cardTasks = new();
     private Kanban? _selectedBoard;
     private bool IsLoggedIn;
@@ -132,26 +123,25 @@ else
         }
 
     }
-    
+
 
     private async Task LoadColumnsFromSelectedBoard()
     {
         if (_selectedBoard != null)
         {
-            var columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
-            _columns = columns.OrderBy(c => c.Position).ToList();
+            _columns = await ColumnService.GetColumnsByKanbanIdAsync(_selectedBoard.Id);
             _columnCards.Clear();
             _cardTasks.Clear();
             foreach (var column in _columns)
             {
                 var cards = await CardService.GetAllCardsByColumnIdAsync(column.Id);
-                _columnCards[column.Id] = cards.OrderBy(c => c.RowId).ToList();
+                _columnCards[column.Id] = cards;
                 foreach (var card in cards)
                 {
                     var tasks = await TaskService.GetTasksByCardId(card.Id);
-                    _cardTasks[card.Id] = tasks.OrderBy(t => t.RowId).ToList();
+                    _cardTasks[card.Id] = tasks;
                 }
-                
+
             }
         }
     }
@@ -161,6 +151,7 @@ else
         await LoadColumnsFromSelectedBoard();
         StateHasChanged();
     }
+
     protected override async Task OnInitializedAsync()
     {
         await UserSession.RefreshUserAsync();
@@ -168,8 +159,7 @@ else
         _selectedBoardId = 1;
         if (UserSession.CurrentUser != null)
         {
-            _boards = new List<Kanban>();
-            _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
+            _boards = await KanbanService.GetSharedKanbansAsync(UserSession.CurrentUser.Id);
         }
         else
         {
@@ -189,4 +179,5 @@ else
     {
         UserSession.OnChange -= StateHasChanged;
     }
+
 }
