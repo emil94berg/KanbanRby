@@ -1,0 +1,56 @@
+name: PR to Discord
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+    branches:
+      - main
+      - dev
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord - PR Open
+        if: ${{ github.event.action == 'opened' || github.event.action == 'reopened'}}
+        uses: stegzilla/discord-notify@v4
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "🚀 New Pull Request: ${{ github.event.pull_request.title }}"
+          message: |
+            **Repository:** ${{ github.repository }}
+            **Branch:** ${{ github.head_ref }} --> ${{github.base_ref}}
+            **Author:** ${{ github.actor }}
+            [View Pull Request](${{ github.event.pull_request.html_url }})
+          colour: '#3371FF'
+          username: ${{ github.event.pull_request.user.login }}
+          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
+          
+      - name: Notify Discord - Pr Closed
+        if: ${{ github.event.action == 'closed' && github.event.pull_request.merged == false }}
+        uses: stegzilla/discord-notify@v4
+        with: 
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "❌ Pull Request Closed: ${{ github.event.pull_request.title }}"
+          message: |
+            **Repository:** ${{ github.repository }}
+            **Author:** ${{ github.actor }}
+            The pull request was closed without being merged.
+            [View Pull Request](${{ github.event.pull_request.html_url }})
+          colour: '#FF0000'
+          username: ${{ github.event.pull_request.user.login }}
+          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
+
+      - name: Notify Discord - Pr Merged
+        if: ${{ github.event.action == 'closed' && github.event.pull_request.merged == true }}
+        uses: stegzilla/discord-notify@v4
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "✅ Pull Request Merged: ${{ github.event.pull_request.title }}"
+          message: |
+            **Repository:** ${{ github.repository }}
+            **Author:** ${{ github.actor }}
+            The pull request was successfully merged into `${{ github.base_ref }}`.
+            [View Pull Request](${{ github.event.pull_request.html_url }})
+          colour: '#00FF00'
+          username: ${{ github.event.pull_request.user.login }}
+          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
+        

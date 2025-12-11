@@ -1,0 +1,73 @@
+@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject IColumnManagerService ColumnService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Update</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                <EditForm Model="@_column" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateColumn">
+                    <div>
+                        <label>Name: </label>
+                        <InputText @bind-Value="@_column.Name"></InputText>
+                    </div>
+                    <div>
+                        <label>Description: </label>
+                        <InputText @bind-Value="@_column.Description"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
+                </EditForm>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int ColumnId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnUpdated { get; set; }
+        
+        private bool isPopupVisible = false;
+        private bool IsLoggedIn;
+        private Column _column = new();
+        
+        private async Task ShowPopup()
+        {
+            isPopupVisible = true;
+            _column = await ColumnService.GetByIdAsync(ColumnId);
+            StateHasChanged();
+        }
+
+        private void ClosePopup()
+        {
+            isPopupVisible = false;
+        }
+
+        private async Task UpdateAndClosePopup()
+        {
+            try
+            {
+                await ColumnService.UpdateColumnAsync(_column);
+                await OnUpdated.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

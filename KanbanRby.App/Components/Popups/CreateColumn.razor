@@ -1,0 +1,81 @@
+﻿@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject IColumnManagerService ColumnService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new column</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay" @onclick="HidePopup">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <h3>Create New Column</h3>
+                <EditForm Model="@_newColumn" OnValidSubmit="@CreateAndClosePopup" FormName="CreateColumn">
+                    <div>
+                        <label>Name</label>
+                        <InputText @bind-Value="@_columnName" placeholder="Enter column name"></InputText>
+                    </div>
+                    <div>
+                        <label>Description</label>
+                        <InputText @bind-Value="@_columnDescription" placeholder="Enter column description"></InputText>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+                        <button type="submit" class="btn btn-success">Create Column</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    
+    [Parameter]
+    public EventCallback OnCreate { get; set; }
+    
+    private bool isPopupVisible = false;
+    private Column _newColumn = new Column();
+    private string _columnName;
+    private string _columnDescription;
+    private bool IsLoggedIn;
+    
+    private void ShowPopup()
+    {
+        isPopupVisible = true;
+    }
+
+    private void HidePopup()
+    {
+        isPopupVisible = false;
+        _columnName = string.Empty;
+        _columnDescription = string.Empty;
+    }
+
+    private async Task CreateAndClosePopup()
+    {
+        var user = UserSession.CurrentUser;
+        try
+        {
+            await ColumnService.CreateColumnAsync(_columnName, _columnDescription, BoardId);
+            await OnCreate.InvokeAsync();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        
+        HidePopup();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
+    }
+}

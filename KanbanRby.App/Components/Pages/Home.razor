@@ -1,0 +1,110 @@
+﻿@page "/"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
+@using Task = Task
+@inject ISupabaseService Supabase
+@inject IKanbanBoardService KanbanService
+@inject IUserSession UserSession
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+
+
+
+<PageTitle>Home</PageTitle>
+
+@* Logged in view *@
+@if (IsLoggedIn)
+{
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome back, @DisplayNameOrEmail!</h1>
+            <p class="hero-subtitle">You are currently signed in. Click below to view and manage your existing Kanban boards.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToMyKanbans">
+                Go to My Kanbans →
+            </button>
+        </div>
+    </div>
+}
+
+@* Guest/logged out view *@
+else
+{
+    <div class="home-container">
+        <div class="hero-section">
+            <h1 class="hero-title">Welcome to Kanban Viewer!</h1>
+            <p class="hero-subtitle">A simple and effective way to manage your tasks using Kanban boards.</p>
+        </div>
+
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h2 class="feature-title">Track Everything</h2>
+                <p class="feature-description">Visualize your workflow with custom columns. From 'To Do' to 'Done', see where every task stands instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h2 class="feature-title">Collaborate Easily</h2>
+                <p class="feature-description">Invite team members, assign tasks, and keep everyone on the same page. Real-time updates included!</p>
+            </div>
+        </div>
+
+        <div class="steps-section">
+            <h3 class="steps-title">Get Started in 3 Steps:</h3>
+            <ol class="steps-list">
+                <li class="step-item">
+                    <strong>Create an Account:</strong> Sign up in seconds using the button below.
+                </li>
+                <li class="step-item">
+                    <strong>Create a Board:</strong> Set up your first project board and columns.
+                </li>
+                <li class="step-item">
+                    <strong>Add Tasks:</strong> Start organizing your work and collaborate!
+                </li>
+            </ol>
+        </div>
+
+        <div class="cta-section">
+            <p class="cta-text">To start organizing your projects, please log in or create an account.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToRegisterAccount">
+                Create Account →
+            </button>
+        </div>
+    </div>
+}
+
+
+@code {
+    private bool IsLoggedIn;
+    
+    private string DisplayNameOrEmail =>
+        (UserSession.CurrentUser != null &&
+         UserSession.CurrentUser.UserMetadata.ContainsKey("display_name") &&
+         UserSession.CurrentUser.UserMetadata["display_name"] != null)
+            ? UserSession.CurrentUser.UserMetadata["display_name"]!.ToString()!
+            : UserSession.CurrentUser?.Email ?? "User";
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserSession.RefreshUserAsync();
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
+        UserSession.OnChange += StateHasChanged;
+    }
+
+    private void NavigateToRegisterAccount()
+    {
+        NavManager.NavigateTo("/registerAccount");
+    }
+
+    private void NavigateToMyKanbans()
+    {
+        NavManager.NavigateTo("/myKanbans");
+    }
+
+    public void Dispose()
+    {
+        UserSession.OnChange -= StateHasChanged;
+    }
+}

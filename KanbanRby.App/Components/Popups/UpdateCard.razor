@@ -1,0 +1,73 @@
+@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ICardManagementService CardService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Update</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onabort:stopPropagation="true">
+                <EditForm Model="@_card" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateCard">
+                    <div>
+                        <label>Name: </label>
+                        <InputText @bind-Value="@_card.Name"></InputText>
+                    </div>
+                    <div>
+                        <label>Description: </label>
+                        <InputText @bind-Value="@_card.Description"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
+                </EditForm>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int CardId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnUpdated { get; set; }
+        
+        private bool isPopupVisible = false;
+        private bool IsLoggedIn;
+        private Card _card = new();
+        
+        private async Task ShowPopup()
+        {
+            isPopupVisible = true;
+            _card = await CardService.GetCardByIdAsync(CardId);
+            StateHasChanged();
+        }
+
+        private void ClosePopup()
+        {
+            isPopupVisible = false;
+        }
+
+        private async Task UpdateAndClosePopup()
+        {
+            try
+            {
+                await CardService.UpdateCardAsync(_card);
+                await OnUpdated.InvokeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

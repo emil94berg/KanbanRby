@@ -1,0 +1,73 @@
+﻿@page "/registerAccount"
+@using KanbanRby.Models
+@using KanbanRby.Services.Interfaces
+@using Microsoft.IdentityModel.Tokens
+@using Task = System.Threading.Tasks.Task
+@inject ISupabaseAuthService SupabaseAuth
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create Account</PageTitle>
+
+<div class="home-container auth-container">
+    <div class="hero-section">
+        <h1 class="hero-title">Create Your Account</h1>
+        <p class="hero-subtitle">Join us and start organizing your projects with Kanban boards in seconds!</p>
+    </div>
+
+    <div class="features-section">
+        <div class="feature-card">
+            <EditForm Model="@_loginModel" OnValidSubmit="@CreateAccount" FormName="CreateAccountForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <InputText @bind-Value="@_loginModel.Email" class="form-control" placeholder="Enter your email"></InputText>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <InputText @bind-Value="@_loginModel.DisplayName" class="form-control" placeholder="Choose a display name"></InputText>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <InputText @bind-Value="@_loginModel.Password" type="password" class="form-control" placeholder="Create a password"></InputText>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <InputText @bind-Value="@ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password"></InputText>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-hero">Create Account →</button>
+            </EditForm>
+            
+            <div style="margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid #e8e8e8;">
+                <p style="color: #666; margin-bottom: 0.75rem;">Already have an account?</p>
+                <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToLogin" style="width: 100%; background-color: #6c757d; border-color: #6c757d;">
+                    Login →
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private LoginModel _loginModel { get; set; } = new();
+    
+    [SupplyParameterFromForm]
+    private string ConfirmPassword { get; set; } = string.Empty;
+
+    public async Task CreateAccount()
+    {
+        if (!_loginModel.Email.IsNullOrEmpty() && !_loginModel.Password.IsNullOrEmpty() && !_loginModel.DisplayName.IsNullOrEmpty()
+            && _loginModel.Password == ConfirmPassword)
+        {
+            await SupabaseAuth.RegisterNewAccountAsync(_loginModel.Email, _loginModel.Password, _loginModel.DisplayName);
+            await SupabaseAuth.LoginUserAsync(_loginModel.Email, _loginModel.Password);
+            NavigationManager.NavigateTo("/");
+        }
+        
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}
