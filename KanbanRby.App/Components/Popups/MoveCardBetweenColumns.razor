@@ -25,8 +25,8 @@
                     </select>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button class="btn btn-primary" @onclick="MoveAndClosePopup">Move</button>
-                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                    <button class="btn btn-primary" @onclick="MoveAndClosePopup" disabled="@isLoading">@(isLoading ? "Moving..." : "Move")</button>
+                    <button class="btn btn-secondary" @onclick="ClosePopup" disabled="@isLoading">Cancel</button>
                 </div>
             </div>
         </div>
@@ -48,6 +48,7 @@
         private bool IsLoggedIn;
         private List<Column> _availableColumns = new();
         private int _selectedColumnId;
+        private bool isLoading = false;
         
         private async Task ShowPopup()
         {
@@ -63,6 +64,7 @@
 
         private async Task MoveAndClosePopup()
         {
+            isLoading = true;
             try
             {
                 if (_selectedColumnId != CurrentColumnId)
@@ -74,6 +76,10 @@
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                isLoading = false;
             }
             
             isPopupVisible = false;

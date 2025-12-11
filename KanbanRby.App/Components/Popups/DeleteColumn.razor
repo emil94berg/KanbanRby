@@ -16,8 +16,8 @@
                 <h3>Delete Column</h3>
                 <p style="margin-bottom: 1.5rem; color: #555; font-size: 1rem;">Are you sure you want to delete this column? This action cannot be undone.</p>
                 <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
-                    <button class="btn btn-danger" @onclick="DeleteAndClosePopup">Delete</button>
+                    <button class="btn btn-secondary" @onclick="ClosePopup" disabled="@isLoading">Cancel</button>
+                    <button class="btn btn-danger" @onclick="DeleteAndClosePopup" disabled="@isLoading">@(isLoading ? "Deleting..." : "Delete")</button>
                 </div>
             </div>
         </div>
@@ -36,6 +36,7 @@
     
     private bool isPopupVisible = false;
     private bool IsLoggedIn;
+    private bool isLoading = false;
     
     private void ShowPopup()
     {
@@ -49,6 +50,7 @@
 
     private async Task DeleteAndClosePopup()
     {
+        isLoading = true;
         try
         {
             await ColumnService.DeleteColumnAsync(ColumnId);
@@ -58,6 +60,10 @@
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            isLoading = false;
         }
         
         isPopupVisible = false;

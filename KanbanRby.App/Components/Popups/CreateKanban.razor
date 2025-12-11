@@ -24,8 +24,8 @@
                         <InputText @bind-Value="@_kanbanDescription" placeholder="Enter board description"></InputText>
                     </div>
                     <div style="margin-top: 1rem;">
-                        <button type="button" class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
-                        <button type="submit" class="btn btn-success">Create Board</button>
+                        <button type="button" class="btn btn-secondary" disabled="@isLoading" @onclick="HidePopup">Cancel</button>
+                        <button type="submit" class="btn btn-success" disabled="@isLoading">@(isLoading ? "Creating..." : "Create Board")</button>
                     </div>
                 </EditForm>
             </div>
@@ -40,6 +40,7 @@
     private string _kanbanName;
     private string _kanbanDescription;
     private bool IsLoggedIn;
+    private bool isLoading = false;
     [Parameter]
     public EventCallback OnCreate { get; set; }
     
@@ -59,6 +60,7 @@
     private async Task CreateAndClosePopup()
     {
         var user = UserSession.CurrentUser;
+        isLoading = true;
         try
         {
             await KanbanService.CreateKanbanAsync(_kanbanName, _kanbanDescription, user.Id);
@@ -67,6 +69,10 @@
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            isLoading = false;
         }
         
         HidePopup();
