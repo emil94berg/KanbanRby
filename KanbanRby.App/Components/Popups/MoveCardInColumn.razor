@@ -8,8 +8,8 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-sm btn-secondary" style="margin: 2px color: white" @onclick="MoveUp" disabled="@(!CanMoveUp || isLoading)">↑</button>
-    <button class="btn btn-sm btn-secondary" style="margin: 2px color: white" @onclick="MoveDown" disabled="@(!CanMoveDown || isLoading)">↓</button>
+    <button class="btn btn-sm btn-secondary" style="margin: 2px; color: white;" @onclick="MoveUp" disabled="@(!CanMoveUp || isLoading)">↑</button>
+    <button class="btn btn-sm btn-secondary" style="margin: 2px; color: white;" @onclick="MoveDown" disabled="@(!CanMoveDown || isLoading)">↓</button>
     
     @code {
         [Parameter]
