@@ -8,7 +8,7 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Delete</button>
+    <button class="btn btn-sm btn-danger" style="margin: 2px; color: white;" @onclick="ShowPopup">Delete</button>
     @if (isPopupVisible)
     {
         <div class="popup-overlay" @onclick="ClosePopup">

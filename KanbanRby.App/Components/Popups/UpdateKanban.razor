@@ -4,23 +4,23 @@
 @inject IUserSession UserSession
 @using Services.Interfaces
 @using Task = System.Threading.Tasks.Task
-@inject IColumnManagerService ColumnService
+@inject IKanbanBoardService KanbanService
 
 @if (IsLoggedIn)
 {
     <button class="btn btn-sm" style="margin: 2px; background-color: #28a745; border-color: #28a745; color: white;" @onclick="ShowPopup">Update</button>
     @if (isPopupVisible)
     {
-        <div class="popup-overlay">
-            <div class="popup-content" @onabort:stopPropagation="true">
-                <EditForm Model="@_column" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateColumn">
+        <div class="popup-overlay" @onclick="ClosePopup">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <EditForm Model="@_kanban" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateKanban">
                     <div>
                         <label>Name: </label>
-                        <InputText @bind-Value="@_column.Name"></InputText>
+                        <InputText @bind-Value="@_kanban.Name"></InputText>
                     </div>
                     <div>
                         <label>Description: </label>
-                        <InputText @bind-Value="@_column.Description"></InputText>
+                        <InputText @bind-Value="@_kanban.Description"></InputText>
                     </div>
                     <button type="submit">Save and close</button>
                 </EditForm>
@@ -29,19 +29,19 @@
     }
     @code {
         [Parameter]
-        public int ColumnId { get; set; }
+        public int KanbanId { get; set; }
         
         [Parameter]
         public EventCallback OnUpdated { get; set; }
         
         private bool isPopupVisible = false;
         private bool IsLoggedIn;
-        private Column _column = new();
+        private Kanban _kanban = new();
         
         private async Task ShowPopup()
         {
             isPopupVisible = true;
-            _column = await ColumnService.GetByIdAsync(ColumnId);
+            _kanban = await KanbanService.GetByIdAsync(KanbanId);
             StateHasChanged();
         }
 
@@ -54,7 +54,7 @@
         {
             try
             {
-                await ColumnService.UpdateColumnAsync(_column);
+                await KanbanService.UpdateAsync(_kanban);
                 await OnUpdated.InvokeAsync();
             }
             catch(Exception e)
