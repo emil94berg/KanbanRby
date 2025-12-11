@@ -1,6 +1,7 @@
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
 @using Task = System.Threading.Tasks.Task
 @inject IUserSession UserSession
 @inject ISupabaseProfileService ProfileService
@@ -9,7 +10,7 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopUp" disabled="@isLoading">Invite User</button>
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopUp">Invite User</button>
     if (isPopUpVisible)
     {
         <div class="popup-overlay" @onclick="HidePopUp">

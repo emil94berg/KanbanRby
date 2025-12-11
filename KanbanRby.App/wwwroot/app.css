@@ -59,49 +59,92 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* ---- YourKanbanPage ---- */ 
 
 .columnContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    background-color: dodgerblue;
-    padding: 10px;
+    display: flex;
+    gap: 30px; 
+    padding: 20px;
+    overflow-x: auto;
+    
 }
+
+/* ---- Header ---- */ 
 
 .columnContainer strong {
-    text-decoration: underline;
-    text-decoration-color: black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
 }
-
-.columnContainer div {
-    background-color: lightblue;
-    border: 1px solid black;
-    padding: 10px;
-    font-size: 30px;
-    text-align: center;
+.column-header{
     display: flex;
-    flex-direction: column; 
+    justify-content: space-between;
+    border: solid 1px black;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: antiquewhite;
+    box-shadow: rgba(0, 0, 200, 0.2) 10px 10px;
 }
 
-.columnContainer div.card {
-    background-color: orange;
+.columnContainer > div > div:first-child {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #d8dde6;
+}
+/* ---- Cards ---- */
+
+.card{
+    background: lightblue;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px; 
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
     border: 2px solid black;
-    padding: 4px;
-    font-size: 20px;
-    text-align: center;
-    margin: 4px;
+    transition: 0.15s ease;
 }
-
-.columnContainer div.card.task {
-    background-color: orange;
+.card:hover{
+    transform: scale(1.10);
+    box-shadow: 0 4px 12px 0 rgba(50, 50, 50, 0.08);
+}
+.card p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #34495e;
+}
+/* ---- Task ----*/
+.task{
+    background: lightsalmon;
+    padding: 8px;
+    border-radius: 6px;
     border: 1px solid black;
-    text-align: center;
-    font-size: 18px;
-    padding: 2px;
+    margin-top: 8px;
+}
+.task.completed {
+    background-color: lightgreen;
+    color: #000;
+    transition: 0.3s ease;
+}
+.task p {
+    font-size: 0.8rem;
+    margin: 0;
+}
+.card button,
+.columnContainer button {
+    margin-top: 8px;
+    border-radius: 6px !important;
+    width: auto;
+    height: auto;
+}
+button{
+    border-radius: 6px !important;
+}
+.kanban-form-select{
+    width: 250px;
+    margin-bottom: 20px;
+    border-radius: 6px;
 }
 
-.columnContainer div button{
-    margin-top: auto;
-}
+/* ---- YourKanbanPage ends here ---- */
 
 .loginContainer{
     display: grid;
@@ -478,123 +521,6 @@ h1:focus {
 .auth-container .btn-hero {
     width: 100%;
     margin-top: 1rem;
-}
-
-/* Kanban Board Styles */
-.kanban-page {
-    max-width: 100%;
-    padding: 2rem 1rem;
-}
-
-.kanban-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 2rem;
-    border-radius: 12px;
-    color: white;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.kanban-header h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.75rem;
-    font-weight: 700;
-}
-
-.kanban-header h1 {
-    margin: 0.5rem 0;
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-.board-controls {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.board-controls .form-select {
-    flex: 1;
-    min-width: 200px;
-    padding: 0.75rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.board-controls .form-select:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.columnContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    min-height: 500px;
-}
-
-.columnContainer > div {
-    background-color: #e9ecef;
-    border-radius: 12px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: none;
-}
-
-.columnContainer strong {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-    text-decoration: none;
-    padding: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 6px;
-}
-
-.columnContainer div.card {
-    background-color: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.2s ease;
-    font-size: 0.95rem;
-}
-
-.columnContainer div.card:hover {
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-.columnContainer div.card.task {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-}
-
-.columnContainer div.card.task:hover {
-    background-color: #e9ecef;
-}
-
-.columnContainer div button {
-    margin-top: auto;
 }
 
 .empty-state {

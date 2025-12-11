@@ -1,5 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AComponentBase_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fc79a534484f3c079e696a1b8489d234b7066e25afd8a9b4bd1be4257d3167_003FComponentBase_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AComponentState_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F80be1bb682c1dfd949d78dbb7c6bdf071b6749c2020862ad13250accdef2e_003FComponentState_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AEventCallbackWorkItem_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F3a0fdaa83b0344dd1fcb11565650103a7070e3ebbbc44a6b145c17bb13a945_003FEventCallbackWorkItem_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AServiceProvider_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fd7e2ce30531b7a2d56142411c5e51c3d516aafcb44e7628167b959660a65c_003FServiceProvider_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AArgumentNullException_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003F18d0c58f56d62b50aecfa79cf9bad48aac765bf1311e52798225ab8bc6a2e2_003FArgumentNullException_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -37,11 +38,11 @@
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4fbc89ae_002Def47_002D460b_002Da705_002D8cbb008bceaa/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetUserById" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.SupabaseAuthServiceTest.Test_SupabaseLoginSetsCurrentUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.SupabaseAuthServiceTest.TestLogin&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d82fbd23_002D642e_002D4ace_002D8862_002D96a8b008e16a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test_SupabaseLoginSetsCurrentUser" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.SupabaseAuthServiceTest.Test_SupabaseLoginSetsCurrentUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5CAFFE72-0DB0-4543-870C-E6CB28E021C7::net10.0::KanbanRby.Test.TaskTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
