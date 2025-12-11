@@ -12,59 +12,71 @@
     <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">+</button>
     @if (isPopupVisible)
     {
-        <div class="popup-overlay">
-            <div class="popup-content" @onabort:stopPropagation="true">
+        <div class="popup-overlay" @onclick="HidePopup">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <h3>Create New Task</h3>
                 <EditForm Model="@_newTask" OnValidSubmit="@CreateAndClosePopup" FormName="CreateTask">
                     <div>
-                        <label>Name: </label>
-                        <InputText @bind-Value="@_taskName"></InputText>
+                        <label>Name</label>
+                        <InputText @bind-Value="@_taskName" placeholder="Enter task name"></InputText>
                     </div>
                     <div>
-                        <label>Description: </label>
-                        <InputText @bind-Value="@_taskDescription"></InputText>
+                        <label>Description</label>
+                        <InputText @bind-Value="@_taskDescription" placeholder="Enter task description"></InputText>
                     </div>
-                    <button type="submit">Save and close</button>
+                    <div style="margin-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+                        <button type="submit" class="btn btn-success">Create Task</button>
+                    </div>
                 </EditForm>
             </div>
         </div>
     }
-    @code {
-        [Parameter]
-        public int CardId { get; set; }
-        
-        [Parameter]
-        public EventCallback OnCreate { get; set; }
-        
-        private bool isPopupVisible = false;
-        private TaskModel _newTask = new TaskModel();
-        private string _taskName;
-        private string _taskDescription;
-        private bool IsLoggedIn;
-        
-        private void ShowPopup()
-        {
-            isPopupVisible = true;
-        }
+}
 
-        private async Task CreateAndClosePopup()
-        {
-            var user = UserSession.CurrentUser;
-            try
-            {
-                await TaskService.CreateTaskAsync(_taskName, CardId);
-                await OnCreate.InvokeAsync();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            
-            isPopupVisible = false;
-        }
+@code {
+    [Parameter]
+    public int CardId { get; set; }
+    
+    [Parameter]
+    public EventCallback OnCreate { get; set; }
+    
+    private bool isPopupVisible = false;
+    private TaskModel _newTask = new TaskModel();
+    private string _taskName;
+    private string _taskDescription;
+    private bool IsLoggedIn;
+    
+    private void ShowPopup()
+    {
+        isPopupVisible = true;
+    }
 
-        protected override async Task OnInitializedAsync()
+    private void HidePopup()
+    {
+        isPopupVisible = false;
+        _taskName = string.Empty;
+        _taskDescription = string.Empty;
+    }
+
+    private async Task CreateAndClosePopup()
+    {
+        var user = UserSession.CurrentUser;
+        try
         {
-            IsLoggedIn = await UserSession.IsLoggedInAsync();
+            await TaskService.CreateTaskAsync(_taskName, CardId);
+            await OnCreate.InvokeAsync();
         }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        
+        HidePopup();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
     }
 }

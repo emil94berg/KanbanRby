@@ -1,4 +1,4 @@
-﻿@page "/myKanbans"
+@page "/myKanbans"
 @using KanbanRby.Components.Popups
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
@@ -12,92 +12,107 @@
 @inject IUserSession UserSession
 @rendermode InteractiveServer
 
-<h3>My Kanbans</h3>
-<CreateKanban></CreateKanban>
-@if (_boards == null)
-{
-    <strong>Loading...</strong>
-}
-else if (!_boards.Any())
-{
-    <p>There are no boards made yet!</p>
-}
-else
-{
-    
-    <h1>@_selectedBoard?.Name</h1>
-    @if (IsLoggedIn)
+<PageTitle>My Kanbans</PageTitle>
+
+<div class="kanban-page">
+    @if (_boards == null)
     {
-        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
-        {
-            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
-        }
-        else
-        {
-            <h1>@UserSession.CurrentUser.Email</h1>
-        }
+        <div class="loading-state">
+            <strong>Loading...</strong>
+        </div>
     }
-
-
-
-    <select class="form-select" @bind="SelectedBoardId">
-        @foreach (var board in _boards)
-        {
-            <option value="@board.Id">
-                @board.Name
-            </option>
-        }
-    </select>
-    <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
-    
-    <InviteUserPopUp selectedKanban="@_selectedBoard"/>
-    
-    <div class="columnContainer">
-        @if (_columns.Any())
-        {
-            @foreach (var column in _columns)
+    else if (!_boards.Any())
+    {
+        <div class="kanban-header">
+            <h3>My Kanbans</h3>
+        </div>
+        <div class="empty-state">
+            <p>There are no boards made yet!</p>
+            <div style="margin-top: 1.5rem;">
+                <CreateKanban></CreateKanban>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="kanban-header">
+            <h3>My Kanbans</h3>
+            <h1>@_selectedBoard?.Name</h1>
+            @if (IsLoggedIn)
             {
-                <div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <strong>@column.Name</strong>
-                        <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
-                    </div>
-                    @if (_columnCards.TryGetValue(column.Id, out var cards))
-                    {
-                        @foreach (var card in cards)
-                        {
-                            <div class="card">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <p style="margin: 0;">@card.Name</p>
-                                    <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
-                                </div>
-                                @if (_cardTasks.TryGetValue(card.Id, out var tasks))
-                                {
-                                    @foreach (var task in tasks)
-                                    {
-                                        <div class="task">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <p style="margin: 0;">@task.Name</p>
-                                                <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                                <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
-                            </div>
-                        }
-                    }
-                    <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard>
-                </div>
-                
+                @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
+                {
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Owner: @UserSession.CurrentUser.UserMetadata["display_name"]</p>
+                }
+                else
+                {
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Owner: @UserSession.CurrentUser.Email</p>
+                }
             }
-        }
-        else
-        {
-            <p>No Columns found</p>
-        }
-    </div>
-}
+        </div>
+
+        <div class="board-controls">
+            <select class="form-select" @bind="SelectedBoardId">
+                @foreach (var board in _boards)
+                {
+                    <option value="@board.Id">
+                        @board.Name
+                    </option>
+                }
+            </select>
+            <CreateKanban></CreateKanban>
+            <CreateColumn BoardId="@SelectedBoardId" OnCreate="ReloadPage"></CreateColumn>
+            <InviteUserPopUp selectedKanban="@_selectedBoard"/>
+        </div>
+
+        <div class="columnContainer">
+            @if (_columns.Any())
+            {
+                @foreach (var column in _columns)
+                {
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>@column.Name</strong>
+                            <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
+                        </div>
+                        @if (_columnCards.TryGetValue(column.Id, out var cards))
+                        {
+                            @foreach (var card in cards)
+                            {
+                                <div class="card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <p style="margin: 0; font-weight: 600;">@card.Name</p>
+                                        <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
+                                    </div>
+                                    @if (_cardTasks.TryGetValue(card.Id, out var tasks))
+                                    {
+                                        @foreach (var task in tasks)
+                                        {
+                                            <div class="card task">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <p style="margin: 0;">@task.Name</p>
+                                                    <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
+                                </div>
+                            }
+                        }
+                        <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <p>No columns found. Create one to get started!</p>
+                </div>
+            }
+        </div>
+    }
+</div>
 
 @code {
     

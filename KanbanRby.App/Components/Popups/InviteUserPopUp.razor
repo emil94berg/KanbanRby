@@ -14,25 +14,28 @@
     {
         <div class="popup-overlay" @onclick="HidePopUp">
             <div class="popup-content" @onclick:stopPropagation="true">
+                <h3>Invite User</h3>
                 @if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    <div style="color: red; margin-bottom: 10px;">@errorMessage</div>
+                    <div class="alert alert-danger">@errorMessage</div>
                 }
                 @if (!string.IsNullOrEmpty(successMessage))
                 {
-                    <div style="color: green; margin-bottom: 10px;">@successMessage</div>
+                    <div class="alert alert-success">@successMessage</div>
                 }
-                <label>Search for display name or email: </label>
-                <InputText @bind-Value="searchQuery" @bind-Value:after="OnSearchQueryChanged" disabled="@isLoading"></InputText>
+                <label>Search for display name or email</label>
+                <InputText @bind-Value="searchQuery" @bind-Value:after="OnSearchQueryChanged" disabled="@isLoading" placeholder="Search users..."></InputText>
                 <select class="form-select" @bind="selectedUserId" disabled="@isLoading">
                     <option value="">-- Select a user --</option>
                     @foreach (var user in GetFilteredProfiles())
                     {
-                        <option value="@user.id">Email: @user.email Display Name: @user.displayName</option>
+                        <option value="@user.id">@user.displayName (@user.email)</option>
                     }
                 </select>
-                <button class="btn btn-secondary" @onclick="HidePopUp" disabled="@isLoading">Close</button>
-                <button class="btn btn-success" @onclick="InviteUser" disabled="@isLoading">@(isLoading ? "Inviting..." : "Invite")</button>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary" @onclick="HidePopUp" disabled="@isLoading">Close</button>
+                    <button class="btn btn-success" @onclick="InviteUser" disabled="@isLoading">@(isLoading ? "Inviting..." : "Invite User")</button>
+                </div>
             </div>
         </div>
     }

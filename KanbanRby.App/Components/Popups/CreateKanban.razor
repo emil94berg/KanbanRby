@@ -11,54 +11,65 @@
     <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new Board</button>
     @if (isPopupVisible)
     {
-        <div class="popup-overlay">
-            <div class="popup-content" @onabort:stopPropagation="true">
+        <div class="popup-overlay" @onclick="HidePopup">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <h3>Create New Board</h3>
                 <EditForm Model="@_newKanban" OnValidSubmit="@CreateAndClosePopup" FormName="CreateKanban">
                     <div>
-                        <label>Name: </label>
-                        <InputText @bind-Value="@_kanbanName"></InputText>
+                        <label>Name</label>
+                        <InputText @bind-Value="@_kanbanName" placeholder="Enter board name"></InputText>
                     </div>
                     <div>
-                        <label>Description: </label>
-                        <InputText @bind-Value="@_kanbanDescription"></InputText>
+                        <label>Description</label>
+                        <InputText @bind-Value="@_kanbanDescription" placeholder="Enter board description"></InputText>
                     </div>
-                    <button type="submit">Save and close</button>
+                    <div style="margin-top: 1rem;">
+                        <button type="button" class="btn btn-secondary" @onclick="HidePopup">Cancel</button>
+                        <button type="submit" class="btn btn-success">Create Board</button>
+                    </div>
                 </EditForm>
             </div>
         </div>
     
     }
-    @code {
-        private bool isPopupVisible = false;
-        private Kanban _newKanban = new Kanban();
-        private string _kanbanName;
-        private string _kanbanDescription;
-        private bool IsLoggedIn;
+}
+
+@code {
+    private bool isPopupVisible = false;
+    private Kanban _newKanban = new Kanban();
+    private string _kanbanName;
+    private string _kanbanDescription;
+    private bool IsLoggedIn;
+    
+    private void ShowPopup()
+    {
+        isPopupVisible = true;
+    }
+
+    private void HidePopup()
+    {
+        isPopupVisible = false;
+        _kanbanName = string.Empty;
+        _kanbanDescription = string.Empty;
+    }
+
+    private async Task CreateAndClosePopup()
+    {
+        var user = UserSession.CurrentUser;
+        try
+        {
+            await KanbanService.CreateKanbanAsync(_kanbanName, _kanbanDescription, user.Id);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
         
-        private void ShowPopup()
-        {
-            isPopupVisible = true;
-        }
+        HidePopup();
+    }
 
-        private async Task CreateAndClosePopup()
-        {
-            var user = UserSession.CurrentUser;
-            try
-            {
-                await KanbanService.CreateKanbanAsync(_kanbanName, _kanbanDescription, user.Id);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            
-            isPopupVisible = false;
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            IsLoggedIn = await UserSession.IsLoggedInAsync();
-        }
-
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoggedIn = await UserSession.IsLoggedInAsync();
     }
 }

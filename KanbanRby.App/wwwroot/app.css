@@ -137,12 +137,146 @@ h1:focus {
 }
 
 .popup-content {
-    background-color: white;
-    padding: 20px;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    min-width: 450px;
+    max-width: 550px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: popupFadeIn 0.2s ease-out;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-content h3 {
+    margin: 0 0 1.75rem 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #333;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.popup-content label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.popup-content input[type="text"],
+.popup-content .form-select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 2px solid #e0e0e0;
     border-radius: 8px;
-    min-width: 300px;
-    max-width: 500px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.popup-content input[type="text"]:focus,
+.popup-content .form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.popup-content button {
+    padding: 0.875rem 1.75rem;
+    margin-right: 0.75rem;
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.popup-content .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.popup-content .btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.popup-content .btn-primary {
+    background-color: #667eea;
+    color: white;
+}
+
+.popup-content .btn-primary:hover {
+    background-color: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.popup-content .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.popup-content .btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.popup-content .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.popup-content .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.popup-content .btn-success:disabled,
+.popup-content .btn-secondary:disabled,
+.popup-content .btn-primary:disabled,
+.popup-content .btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.popup-content .alert {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.popup-content .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.popup-content .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
 }
 
 
@@ -304,6 +438,12 @@ h1:focus {
 .auth-container .feature-card {
     width: 100%;
     text-align: left;
+    transition: none;
+}
+
+.auth-container .feature-card:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .form-group {
@@ -338,6 +478,144 @@ h1:focus {
 .auth-container .btn-hero {
     width: 100%;
     margin-top: 1rem;
+}
+
+/* Kanban Board Styles */
+.kanban-page {
+    max-width: 100%;
+    padding: 2rem 1rem;
+}
+
+.kanban-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.kanban-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.kanban-header h1 {
+    margin: 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.board-controls {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.board-controls .form-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.board-controls .form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.columnContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    min-height: 500px;
+}
+
+.columnContainer > div {
+    background-color: #e9ecef;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.columnContainer strong {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+}
+
+.columnContainer div.card {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.columnContainer div.card:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.columnContainer div.card.task {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.columnContainer div.card.task:hover {
+    background-color: #e9ecef;
+}
+
+.columnContainer div button {
+    margin-top: auto;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #667eea;
 }
 
 @media (max-width: 768px) {
