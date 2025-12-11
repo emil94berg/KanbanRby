@@ -24,7 +24,6 @@ else if (!_boards.Any())
 }
 else
 {
-    
     <h1>@_selectedBoard?.Name</h1>
     @if (IsLoggedIn)
     {
@@ -37,9 +36,6 @@ else
             <h1>@UserSession.CurrentUser.Email</h1>
         }
     }
-
-
-
     <select class="kanban-form-select" @bind="SelectedBoardId">
         @foreach (var board in _boards)
         {
@@ -72,10 +68,9 @@ else
                                     {
                                         @foreach (var task in tasks)
                                         {
-                                            <div class="task @(task.IsCompleted ? "completed" : "")">
+                                            <div class="task">
                                                 <p>@task.Name</p>
                                                 <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
-                                                <button @onclick="() => TaskCompleted(task)">✓</button>
                                             </div>
                                         }
                                     }
@@ -178,11 +173,11 @@ else
         UserSession.OnChange += StateHasChanged;
     }
 
-    public async Task TaskCompleted(Models.Task task)
-    {
-        task.IsCompleted = !task.IsCompleted;
-        await Task.CompletedTask;
-    }
+    // public async Task TaskCompleted(Models.Task task)
+    // {
+    //     task.IsCompleted = !task.IsCompleted;
+    //     await Task.CompletedTask;
+    // }
 
     public void Dispose()
     {
