@@ -4,42 +4,44 @@
 @inject IUserSession UserSession
 @using Services.Interfaces
 @using Task = System.Threading.Tasks.Task
-@using TaskModel = KanbanRby.Models.Task
-@inject ITaskManagementService TaskService
+@inject IKanbanBoardService KanbanService
 
 @if (IsLoggedIn)
 {
     <button class="btn btn-sm" style="margin: 2px; background-color: #28a745; border-color: #28a745; color: white;" @onclick="ShowPopup">Update</button>
     @if (isPopupVisible)
     {
-        <div class="popup-overlay">
-            <div class="popup-content" @onabort:stopPropagation="true">
-                <EditForm Model="@_task" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateTask">
+        <div class="popup-overlay" @onclick="ClosePopup">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <EditForm Model="@_kanban" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateKanban">
                     <div>
                         <label>Name: </label>
-                        <InputText @bind-Value="@_task.Name"></InputText>
+                        <InputText @bind-Value="@_kanban.Name"></InputText>
                     </div>
-                    <button type="submit" disabled="@isLoading">@(isLoading ? "Saving..." : "Save and close")</button>
+                    <div>
+                        <label>Description: </label>
+                        <InputText @bind-Value="@_kanban.Description"></InputText>
+                    </div>
+                    <button type="submit">Save and close</button>
                 </EditForm>
             </div>
         </div>
     }
     @code {
         [Parameter]
-        public int TaskId { get; set; }
+        public int KanbanId { get; set; }
         
         [Parameter]
         public EventCallback OnUpdated { get; set; }
         
         private bool isPopupVisible = false;
         private bool IsLoggedIn;
-        private TaskModel _task = new();
-        private bool isLoading = false;
+        private Kanban _kanban = new();
         
         private async Task ShowPopup()
         {
             isPopupVisible = true;
-            _task = await TaskService.GetByIdAsync(TaskId);
+            _kanban = await KanbanService.GetByIdAsync(KanbanId);
             StateHasChanged();
         }
 
@@ -50,19 +52,14 @@
 
         private async Task UpdateAndClosePopup()
         {
-            isLoading = true;
             try
             {
-                await TaskService.UpdateTaskAsync(_task);
+                await KanbanService.UpdateAsync(_kanban);
                 await OnUpdated.InvokeAsync();
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
-            }
-            finally
-            {
-                isLoading = false;
             }
             
             isPopupVisible = false;

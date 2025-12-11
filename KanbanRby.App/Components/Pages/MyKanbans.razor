@@ -13,7 +13,6 @@
 @rendermode InteractiveServer
 
 
-<CreateKanban OnCreate="ReloadPage"></CreateKanban>
 @if (_boards == null)
 {
     <strong>Loading...</strong>
@@ -21,12 +20,18 @@
 else if (!_boards.Any())
 {
     <p>There are no boards made yet!</p>
+    <CreateKanban OnCreate="ReloadPage"></CreateKanban>
 }
 else
 {
     <div class="hero-section">
         <div class="hero-content">
             <h1>@_selectedBoard?.Name</h1>
+            <div style="margin-top: 1rem;">
+                <CreateKanban OnCreate="ReloadPage"></CreateKanban>
+                <UpdateKanban KanbanId="@SelectedBoardId" OnUpdated="ReloadPage"></UpdateKanban>
+                <DeleteKanban KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteKanban>
+            </div>
         </div>
     </div>
     
@@ -50,8 +55,8 @@ else
                 <div>
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
-                        <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
                         <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
+                        <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
