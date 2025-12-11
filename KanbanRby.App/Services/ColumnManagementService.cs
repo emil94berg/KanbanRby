@@ -27,11 +27,15 @@ public class ColumnManagementService : IColumnManagerService
 
     public async Task<Column> CreateColumnAsync(string name, string description, int boardId)
     {
+        var existingColumns = await GetColumnsByKanbanIdAsync(boardId);
+        var nextPosition = existingColumns.Any() ? existingColumns.Max(c => c.Position) + 1 : 0;
+        
         var newColumn = new Column()
         {
             Name = name,
             Description = description,
-            KanbanId = boardId
+            KanbanId = boardId,
+            Position = nextPosition
         };
         var createdColumn = await _columnFactory.CreateAsync(newColumn);
         return createdColumn;

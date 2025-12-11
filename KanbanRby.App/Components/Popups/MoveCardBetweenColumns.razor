@@ -1,0 +1,87 @@
+@using KanbanRby.Models
+@rendermode InteractiveServer
+@using Sessions.Interfaces
+@inject IUserSession UserSession
+@using Services.Interfaces
+@using Task = System.Threading.Tasks.Task
+@inject ICardManagementService CardService
+@inject IColumnManagerService ColumnService
+
+@if (IsLoggedIn)
+{
+    <button class="btn btn-sm btn-outline-primary" style="margin: 2px" @onclick="ShowPopup">Move</button>
+    @if (isPopupVisible)
+    {
+        <div class="popup-overlay">
+            <div class="popup-content" @onclick:stopPropagation="true">
+                <h4>Move Card to Column</h4>
+                <div>
+                    <label>Select Column: </label>
+                    <select @bind="_selectedColumnId" class="form-select">
+                        @foreach (var column in _availableColumns)
+                        {
+                            <option value="@column.Id">@column.Name</option>
+                        }
+                    </select>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-primary" @onclick="MoveAndClosePopup">Move</button>
+                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
+                </div>
+            </div>
+        </div>
+    }
+    @code {
+        [Parameter]
+        public int CardId { get; set; }
+        
+        [Parameter]
+        public int CurrentColumnId { get; set; }
+        
+        [Parameter]
+        public int BoardId { get; set; }
+        
+        [Parameter]
+        public EventCallback OnMoved { get; set; }
+        
+        private bool isPopupVisible = false;
+        private bool IsLoggedIn;
+        private List<Column> _availableColumns = new();
+        private int _selectedColumnId;
+        
+        private async Task ShowPopup()
+        {
+            _availableColumns = await ColumnService.GetColumnsByKanbanIdAsync(BoardId);
+            _selectedColumnId = _availableColumns.FirstOrDefault(c => c.Id != CurrentColumnId)?.Id ?? CurrentColumnId;
+            isPopupVisible = true;
+        }
+
+        private void ClosePopup()
+        {
+            isPopupVisible = false;
+        }
+
+        private async Task MoveAndClosePopup()
+        {
+            try
+            {
+                if (_selectedColumnId != CurrentColumnId)
+                {
+                    await CardService.MoveCardBetweenColumnsAsync(CardId, _selectedColumnId);
+                    await OnMoved.InvokeAsync();
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            isPopupVisible = false;
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            IsLoggedIn = await UserSession.IsLoggedInAsync();
+        }
+    }
+}

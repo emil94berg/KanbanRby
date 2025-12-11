@@ -16,6 +16,9 @@ public class Task : BaseModel
     [Column("name")]
     public string Name { get; set; }
     
+    [Column("row_id")]
+    public int RowId { get; set; }
+    
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
