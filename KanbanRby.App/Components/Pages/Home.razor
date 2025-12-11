@@ -7,103 +7,104 @@
 @inject ISupabaseService Supabase
 @inject IKanbanBoardService KanbanService
 @inject IUserSession UserSession
+@inject NavigationManager NavManager
 @rendermode InteractiveServer
 
 
 
 <PageTitle>Home</PageTitle>
 
+@* Logged in view *@
+@if (IsLoggedIn)
+{
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome back, @DisplayNameOrEmail!</h1>
+            <p class="hero-subtitle">You are currently signed in. Click below to view and manage your existing Kanban boards.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToMyKanbans">
+                Go to My Kanbans →
+            </button>
+        </div>
+    </div>
+}
 
-@if (_boards == null)
-{
-    <strong>Loading...</strong>
-}
-else if (!_boards.Any())
-{
-    <p>There are no boards made yet!</p>
-}
+@* Guest/logged out view *@
 else
 {
-    
-        
-    
-    <h1>@_selectedBoard?.Name</h1>
-    @if (IsLoggedIn)
-    {
-        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
-        {
-            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
-        }
-        else
-        {
-            <h1>@UserSession.CurrentUser.Email</h1>
-        }
-        
-    }
-    
-    <select class="form-select" @bind="SelectedBoardId">
-        @foreach (var board in _boards)
-        {
-            <option value="@board.Id">
-                @board.Name
-            </option>
-        }
-    </select>
-    
+    <div class="home-container">
+        <div class="hero-section">
+            <h1 class="hero-title">Welcome to Kanban Viewer!</h1>
+            <p class="hero-subtitle">A simple and effective way to manage your tasks using Kanban boards.</p>
+        </div>
+
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h2 class="feature-title">Track Everything</h2>
+                <p class="feature-description">Visualize your workflow with custom columns. From 'To Do' to 'Done', see where every task stands instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h2 class="feature-title">Collaborate Easily</h2>
+                <p class="feature-description">Invite team members, assign tasks, and keep everyone on the same page. Real-time updates included!</p>
+            </div>
+        </div>
+
+        <div class="steps-section">
+            <h3 class="steps-title">Get Started in 3 Steps:</h3>
+            <ol class="steps-list">
+                <li class="step-item">
+                    <strong>Create an Account:</strong> Sign up in seconds using the button below.
+                </li>
+                <li class="step-item">
+                    <strong>Create a Board:</strong> Set up your first project board and columns.
+                </li>
+                <li class="step-item">
+                    <strong>Add Tasks:</strong> Start organizing your work and collaborate!
+                </li>
+            </ol>
+        </div>
+
+        <div class="cta-section">
+            <p class="cta-text">To start organizing your projects, please log in or create an account.</p>
+            <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToRegisterAccount">
+                Create Account →
+            </button>
+        </div>
+    </div>
 }
 
+
 @code {
-    
-    private List<Kanban> _boards;
-    private Kanban? _selectedBoard;
     private bool IsLoggedIn;
     
-
-    private int _selectedBoardId;
-
-    private int SelectedBoardId
-    {
-        get => _selectedBoardId;
-        set
-        {
-            if (_selectedBoardId != value)
-            {
-                _selectedBoardId = value;
-                _selectedBoard = _boards.SingleOrDefault(b => b.Id == _selectedBoardId);
-            }
-        }
-
-    }
-
+    private string DisplayNameOrEmail =>
+        (UserSession.CurrentUser != null &&
+         UserSession.CurrentUser.UserMetadata.ContainsKey("display_name") &&
+         UserSession.CurrentUser.UserMetadata["display_name"] != null)
+            ? UserSession.CurrentUser.UserMetadata["display_name"]!.ToString()!
+            : UserSession.CurrentUser?.Email ?? "User";
     
-    
+
     protected override async Task OnInitializedAsync()
     {
         await UserSession.RefreshUserAsync();
         IsLoggedIn = await UserSession.IsLoggedInAsync();
-        _selectedBoardId = 1;
-        if (UserSession.CurrentUser != null)
-        {
-            _boards = new List<Kanban>();
-            _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
-        }
-        else
-        {
-            _boards = await KanbanService.GetAllAsync();
-        }
-        
-        if (_boards.Any())
-        {
-            SelectedBoardId = _boards.First().Id;
-        }
         UserSession.OnChange += StateHasChanged;
+    }
+
+    private void NavigateToRegisterAccount()
+    {
+        NavManager.NavigateTo("/registerAccount");
+    }
+
+    private void NavigateToMyKanbans()
+    {
+        NavManager.NavigateTo("/myKanbans");
     }
 
     public void Dispose()
     {
         UserSession.OnChange -= StateHasChanged;
     }
-
-   
 }
-

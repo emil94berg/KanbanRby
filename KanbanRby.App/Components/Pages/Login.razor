@@ -6,19 +6,36 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<h3>Login</h3>
-<div>
-    <EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin" FormName="LogInForm" class="loginContainer">
-        <div>
-            <label>Email: </label>
-            <InputText @bind-Value="@_loginModel.Email"></InputText>
+<PageTitle>Login</PageTitle>
+
+<div class="home-container auth-container">
+    <div class="hero-section">
+        <h1 class="hero-title">Welcome Back!</h1>
+        <p class="hero-subtitle">Sign in to access your Kanban boards and continue managing your tasks.</p>
+    </div>
+
+    <div class="features-section">
+        <div class="feature-card">
+            <EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin" FormName="LogInForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <InputText @bind-Value="@_loginModel.Email" class="form-control" placeholder="Enter your email"></InputText>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <InputText @bind-Value="@_loginModel.Password" type="password" class="form-control" placeholder="Enter your password"></InputText>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-hero">Login →</button>
+            </EditForm>
+            
+            <div style="margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid #e8e8e8;">
+                <p style="color: #666; margin-bottom: 0.75rem;">Don't have an account?</p>
+                <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToRegister" style="width: 100%; background-color: #6c757d; border-color: #6c757d;">
+                    Create Account →
+                </button>
+            </div>
         </div>
-        <div>
-            <label>Password: </label>
-            <InputText @bind-Value="@_loginModel.Password" type="password"></InputText>
-        </div>
-        <button type="submit">Login</button>
-    </EditForm>
+    </div>
 </div>
 @code {
     private LoginModel _loginModel = new();
@@ -40,5 +57,10 @@
         {
             Console.WriteLine(e.Message);
         }
+    }
+
+    private void NavigateToRegister()
+    {
+        NavigationManager.NavigateTo("/registerAccount");
     }
 }
