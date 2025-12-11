@@ -32,9 +32,13 @@
     }
     else
     {
+        <div class="hero-section">
+            <div class="hero-content">
+                <h3>Shared Kanbans</h3>
+                <h1>@_selectedBoard?.Name</h1>
+            </div>
+        </div>
         <div class="kanban-header">
-            <h3>Shared Kanbans</h3>
-            <h1>@_selectedBoard?.Name</h1>
             @if (IsLoggedIn)
             {
                 @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
