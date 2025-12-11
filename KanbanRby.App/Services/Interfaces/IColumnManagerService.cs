@@ -11,4 +11,5 @@ public interface IColumnManagerService
     Task<Column> CreateColumnAsync(string name, string description, int boardId);
     Task<Column> UpdateColumnAsync(Column column);
     Task DeleteColumnAsync(int columnId);
+    Task ReorderColumnsInKanbanAsync(int kanbanId);
 }

@@ -8,7 +8,7 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Update</button>
+    <button class="btn btn-sm" style="margin: 2px; background-color: #28a745; border-color: #28a745; color: white;" @onclick="ShowPopup">Update</button>
     @if (isPopupVisible)
     {
         <div class="popup-overlay">
@@ -22,7 +22,7 @@
                         <label>Description: </label>
                         <InputText @bind-Value="@_column.Description"></InputText>
                     </div>
-                    <button type="submit">Save and close</button>
+                    <button type="submit" disabled="@isLoading">@(isLoading ? "Saving..." : "Save and close")</button>
                 </EditForm>
             </div>
         </div>
@@ -37,6 +37,7 @@
         private bool isPopupVisible = false;
         private bool IsLoggedIn;
         private Column _column = new();
+        private bool isLoading = false;
         
         private async Task ShowPopup()
         {
@@ -52,6 +53,7 @@
 
         private async Task UpdateAndClosePopup()
         {
+            isLoading = true;
             try
             {
                 await ColumnService.UpdateColumnAsync(_column);
@@ -60,6 +62,10 @@
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                isLoading = false;
             }
             
             isPopupVisible = false;

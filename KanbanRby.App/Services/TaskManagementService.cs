@@ -43,5 +43,20 @@ public class TaskManagementService : ITaskManagementService
     public async Task<Models.Task> UpdateTaskAsync(Models.Task task) => await _taskFactory.UpdateAsync(task);
     
     public async Task DeleteTaskAsync(int id) => await _taskFactory.DeleteAsync(id);
+
+    public async Task ReorderTasksInCardAsync(int cardId)
+    {
+        var tasks = await GetTasksByCardId(cardId);
+        var index = 0;
+        foreach (var task in tasks.OrderBy(t => t.RowId))
+        {
+            if (task.RowId != index)
+            {
+                task.RowId = index;
+                await _taskFactory.UpdateAsync(task);
+            }
+            index++;
+        }
+    }
     #endregion
 }

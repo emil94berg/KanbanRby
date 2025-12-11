@@ -12,8 +12,7 @@
 @inject IUserSession UserSession
 @rendermode InteractiveServer
 
-<h3>My Kanbans</h3>
-<CreateKanban></CreateKanban>
+
 @if (_boards == null)
 {
     <strong>Loading...</strong>
@@ -21,25 +20,21 @@
 else if (!_boards.Any())
 {
     <p>There are no boards made yet!</p>
+    <CreateKanban OnCreate="ReloadPage"></CreateKanban>
 }
 else
 {
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>@_selectedBoard?.Name</h1>
+            <div style="margin-top: 1rem;">
+                <CreateKanban OnCreate="ReloadPage"></CreateKanban>
+                <UpdateKanban KanbanId="@SelectedBoardId" OnUpdated="ReloadPage"></UpdateKanban>
+                <DeleteKanban KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteKanban>
+            </div>
+        </div>
+    </div>
     
-    <h1>@_selectedBoard?.Name</h1>
-    @if (IsLoggedIn)
-    {
-        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
-        {
-            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
-        }
-        else
-        {
-            <h1>@UserSession.CurrentUser.Email</h1>
-        }
-    }
-
-
-
     <select class="form-select" @bind="SelectedBoardId">
         @foreach (var board in _boards)
         {
@@ -60,8 +55,10 @@ else
                 <div>
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
-                        <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
-                        <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
+                        <div>
+                            <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
+                            <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
+                        </div>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
@@ -84,8 +81,10 @@ else
                                         <div class="task">
                                             <div style="display: flex; justify-content: space-between;">
                                                 <p style="margin: 0;">@task.Name</p>
-                                                <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
-                                                <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                <div>
+                                                    <UpdateTask TaskId="task.Id" OnUpdated="ReloadPage"></UpdateTask>
+                                                    <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                </div>
                                             </div>
                                         </div>
                                     }
@@ -158,6 +157,7 @@ else
 
     private async Task ReloadPage()
     {
+        _boards = await KanbanService.GetUserKanbansAsync(UserSession.CurrentUser.Id);
         await LoadColumnsFromSelectedBoard();
         StateHasChanged();
     }

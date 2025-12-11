@@ -8,4 +8,5 @@ public interface ITaskManagementService
     Task<Models.Task> CreateTaskAsync(string name, int cardId);
     Task<Models.Task> UpdateTaskAsync(Models.Task task);
     Task DeleteTaskAsync(int id);
+    Task ReorderTasksInCardAsync(int cardId);
 }

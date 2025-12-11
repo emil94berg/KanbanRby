@@ -8,7 +8,7 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Delete</button>
+    <button class="btn btn-sm btn-danger" style="margin: 2px; color: white;" @onclick="ShowPopup">Delete</button>
     @if (isPopupVisible)
     {
         <div class="popup-overlay" @onclick="ClosePopup">
@@ -16,8 +16,8 @@
                 <h3>Delete Task</h3>
                 <p style="margin-bottom: 1.5rem; color: #555; font-size: 1rem;">Are you sure you want to delete this task? This action cannot be undone.</p>
                 <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                    <button class="btn btn-secondary" @onclick="ClosePopup">Cancel</button>
-                    <button class="btn btn-danger" @onclick="DeleteAndClosePopup">Delete</button>
+                    <button class="btn btn-secondary" @onclick="ClosePopup" disabled="@isLoading">Cancel</button>
+                    <button class="btn btn-danger" @onclick="DeleteAndClosePopup" disabled="@isLoading">@(isLoading ? "Deleting..." : "Delete")</button>
                 </div>
             </div>
         </div>
@@ -29,10 +29,14 @@
     public int TaskId { get; set; }
     
     [Parameter]
+    public int CardId { get; set; }
+    
+    [Parameter]
     public EventCallback OnDeleted { get; set; }
     
     private bool isPopupVisible = false;
     private bool IsLoggedIn;
+    private bool isLoading = false;
     
     private void ShowPopup()
     {
@@ -46,14 +50,20 @@
 
     private async Task DeleteAndClosePopup()
     {
+        isLoading = true;
         try
         {
             await TaskService.DeleteTaskAsync(TaskId);
+            await TaskService.ReorderTasksInCardAsync(CardId);
             await OnDeleted.InvokeAsync();
         }
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            isLoading = false;
         }
         
         isPopupVisible = false;

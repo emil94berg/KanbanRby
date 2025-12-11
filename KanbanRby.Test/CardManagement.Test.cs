@@ -30,7 +30,7 @@ public class CardManagement_Test : IAsyncLifetime
     {
         var name = "test card";
         var description = "test card description";
-        var columnId = 1;
+        var columnId = 48;
         
         var actual = await _cardManagementService.CreateCardAsync(name, description,  columnId);
         
@@ -45,10 +45,10 @@ public class CardManagement_Test : IAsyncLifetime
     [Fact]
     public async Task ShouldMoveCardBetweenColumns()
     {
-        var expectedColumnId = 2;
+        var expectedColumnId = 50;
         var name = "test card";
         var description = "test card description";
-        var columnId = 1;
+        var columnId = 48;
         
         var actual = await _cardManagementService.CreateCardAsync(name, description, columnId);
         await _cardManagementService.MoveCardBetweenColumnsAsync(actual.Id, expectedColumnId);
@@ -64,14 +64,14 @@ public class CardManagement_Test : IAsyncLifetime
     {
         var name = "test card";
         var description = "test card description";
-        var columnId = 1;
+        var columnId = 48;
         var intChange = -1;
         List<Card> allCards = new();
         
         var actual = await _cardManagementService.CreateCardAsync(name, description, columnId);
         var actual2 = await _cardManagementService.CreateCardAsync("test card2", description, columnId);
         var actual3 = await _cardManagementService.CreateCardAsync("test card3", description, columnId);
-        var actual4 = await _cardManagementService.CreateCardAsync("test card4", description, 2);
+        var actual4 = await _cardManagementService.CreateCardAsync("test card4", description, 50);
         
         allCards =  await _cardManagementService.GetAllCardsAsync(columnId);
         await _cardManagementService.ChangeOrderOfCardsAsync(actual3.Id, intChange, allCards);
@@ -79,7 +79,7 @@ public class CardManagement_Test : IAsyncLifetime
         
         
         Assert.NotNull(allCards);
-        Assert.Equal(2, actual3.RowId);
+        Assert.Equal(1, actual3.RowId);
         Assert.Equal(3, allCards.Count);
         
         _createdCardIds.Add(actual.Id);
