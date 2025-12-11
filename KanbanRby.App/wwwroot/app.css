@@ -58,49 +58,92 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* ---- YourKanbanPage ---- */ 
 
 .columnContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    background-color: dodgerblue;
-    padding: 10px;
+    display: flex;
+    gap: 30px; 
+    padding: 20px;
+    overflow-x: auto;
+    
 }
+
+/* ---- Header ---- */ 
 
 .columnContainer strong {
-    text-decoration: underline;
-    text-decoration-color: black;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
 }
-
-.columnContainer div {
-    background-color: lightblue;
-    border: 1px solid black;
-    padding: 10px;
-    font-size: 30px;
-    text-align: center;
+.column-header{
     display: flex;
-    flex-direction: column; 
+    justify-content: space-between;
+    border: solid 1px black;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: antiquewhite;
+    box-shadow: rgba(0, 0, 200, 0.2) 10px 10px;
 }
 
-.columnContainer div.card {
-    background-color: orange;
+.columnContainer > div > div:first-child {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #d8dde6;
+}
+/* ---- Cards ---- */
+
+.card{
+    background: lightblue;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px; 
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
     border: 2px solid black;
-    padding: 4px;
-    font-size: 20px;
-    text-align: center;
-    margin: 4px;
+    transition: 0.15s ease;
 }
-
-.columnContainer div.card .task {
-    background-color: orange;
+.card:hover{
+    transform: scale(1.10);
+    box-shadow: 0 4px 12px 0 rgba(50, 50, 50, 0.08);
+}
+.card p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #34495e;
+}
+/* ---- Task ----*/
+.task{
+    background: lightsalmon;
+    padding: 8px;
+    border-radius: 6px;
     border: 1px solid black;
-    text-align: center;
-    font-size: 18px;
-    padding: 2px;
+    margin-top: 8px;
+}
+.task.completed {
+    background-color: lightgreen;
+    color: #000;
+    transition: 0.3s ease;
+}
+.task p {
+    font-size: 0.8rem;
+    margin: 0;
+}
+.card button,
+.columnContainer button {
+    margin-top: 8px;
+    border-radius: 6px !important;
+    width: auto;
+    height: auto;
+}
+button{
+    border-radius: 6px !important;
+}
+.kanban-form-select{
+    width: 250px;
+    margin-bottom: 20px;
+    border-radius: 6px;
 }
 
-.columnContainer div button{
-    margin-top: auto;
-}
+/* ---- YourKanbanPage ends here ---- */
 
 .loginContainer{
     display: grid;

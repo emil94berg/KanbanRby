@@ -1,6 +1,7 @@
 @using KanbanRby.Models
 @using KanbanRby.Services.Interfaces
 @using KanbanRby.Sessions.Interfaces
+@using Supabase.Gotrue
 @using Task = System.Threading.Tasks.Task
 @inject IUserSession UserSession
 @inject ISupabaseProfileService ProfileService
@@ -9,30 +10,21 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopUp" disabled="@isLoading">Invite User</button>
+    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopUp">Invite User</button>
     if (isPopUpVisible)
     {
         <div class="popup-overlay" @onclick="HidePopUp">
             <div class="popup-content" @onclick:stopPropagation="true">
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <div style="color: red; margin-bottom: 10px;">@errorMessage</div>
-                }
-                @if (!string.IsNullOrEmpty(successMessage))
-                {
-                    <div style="color: green; margin-bottom: 10px;">@successMessage</div>
-                }
                 <label>Search for display name or email: </label>
-                <InputText @bind-Value="searchQuery" @bind-Value:after="OnSearchQueryChanged" disabled="@isLoading"></InputText>
-                <select class="form-select" @bind="selectedUserId" disabled="@isLoading">
-                    <option value="">-- Select a user --</option>
-                    @foreach (var user in GetFilteredProfiles())
+                <InputText @bind-Value="searchQuery"></InputText>
+                <select class="form-select" @bind="userId">
+                    @foreach (var user in allProfiles.Where(s =>s.displayName.Contains(searchQuery) || s.email.Contains(searchQuery)))
                     {
                         <option value="@user.id">Email: @user.email Display Name: @user.displayName</option>
                     }
                 </select>
-                <button class="btn btn-secondary" @onclick="HidePopUp" disabled="@isLoading">Close</button>
-                <button class="btn btn-success" @onclick="InviteUser" disabled="@isLoading">@(isLoading ? "Inviting..." : "Invite")</button>
+                <button class="btn btn-secondary" @onclick="HidePopUp">Close</button>
+                <button class="btn btn-success" @onclick="() => InviteSelectedUser(userId, selectedKanban)">Invite</button>
             </div>
         </div>
     }
@@ -41,111 +33,36 @@
 @code {
     private bool IsLoggedIn;
     private bool isPopUpVisible = false;
-    private bool isLoading = false;
-    private string selectedUserId = "";
-    private List<PublicProfile> allProfiles = new();
+    public Guid userId { get; set; }
+    List<PublicProfile> allProfiles;
     private string searchQuery = "";
-    private string errorMessage = "";
-    private string successMessage = "";
-    
     [Parameter]
     public Kanban selectedKanban { get; set; }
 
     private void ShowPopUp()
     {
         isPopUpVisible = true;
-        errorMessage = "";
-        successMessage = "";
     }
 
     private void HidePopUp()
     {
-        // We have to empty our messages and other variables or the code becomes sad :(
         isPopUpVisible = false;
-        errorMessage = "";
-        successMessage = "";
-        selectedUserId = "";
-        searchQuery = "";
     }
 
-    private List<PublicProfile> GetFilteredProfiles()
+    private async Task InviteSelectedUser(Guid userId, Kanban selectedKanban)
     {
-        if (string.IsNullOrWhiteSpace(searchQuery))
-            return allProfiles;
-
-        return allProfiles.Where(s => 
-            s.displayName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) || 
-            s.email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
-    }
-
-    private void OnSearchQueryChanged()
-    {
-        // Reset selection when search query changes to prevent selecting a user that's no longer visible
-        if (!string.IsNullOrEmpty(selectedUserId) && Guid.TryParse(selectedUserId, out var guid))
+        if (userId == Guid.Empty)
         {
-            var filteredUsers = GetFilteredProfiles().ToList();
-            if (!filteredUsers.Any(u => u.id == guid))
-            {
-                selectedUserId = "";
-            }
-        }
-    }
-
-    private async Task InviteUser()
-    {
-        errorMessage = "";
-        successMessage = "";
-
-        if (string.IsNullOrEmpty(selectedUserId) || !Guid.TryParse(selectedUserId, out var userId))
-        {
-            errorMessage = "Please select a user to invite.";
+            // Should display a popup so the user knows that invite wasn't sent
             return;
         }
-
-        // Check if user is already invited
-        if (selectedKanban?.KanbanUsers != null && selectedKanban.KanbanUsers.Any(ku => ku.UserId == userId))
-        {
-            errorMessage = "This user is already invited to this kanban.";
-            return;
-        }
-
-        isLoading = true;
-        try
-        {
-            var kanbanUserInvite = new KanbanUser() { UserId = userId, KanbanId = selectedKanban.Id };
-            await InviteUserService.CreateKanbanUser(kanbanUserInvite);
-            
-            // Update the kanban users list locally to prevent re-inviting
-            if (selectedKanban.KanbanUsers == null)
-                selectedKanban.KanbanUsers = new List<KanbanUser>();
-            selectedKanban.KanbanUsers.Add(kanbanUserInvite);
-
-            successMessage = "User invited successfully!";
-            selectedUserId = "";
-            await Task.Delay(1500); // Show success message
-            HidePopUp();
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Failed to invite user: {ex.Message}";
-        }
-        finally
-        {
-            isLoading = false;
-        }
+        var kanbanUserInvite = new KanbanUser() { UserId = userId, KanbanId = selectedKanban.Id};
+        await InviteUserService.CreateKanbanUser(kanbanUserInvite);
     }
     
     protected override async Task OnInitializedAsync()
     {
         IsLoggedIn = await UserSession.IsLoggedInAsync();
-        try
-        {
-            allProfiles = await ProfileService.GetAllProfiles() ?? new List<PublicProfile>();
-        }
-        catch
-        {
-            // Displays an empty list si we don't crash
-            allProfiles = new List<PublicProfile>();
-        }
+        allProfiles = await ProfileService.GetAllProfiles();
     }
 }
