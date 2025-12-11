@@ -16,6 +16,13 @@
 
     <div class="features-section">
         <div class="feature-card">
+            @if (_errorMsg)
+            {
+                <div>
+                    <h4 style="color: lightcoral; align-items:center; text-align: center;">Email or password not found...</h4><br/>
+                    <p style="color: lightcoral; align-items:center; text-align: center;" >Try again</p>
+                </div> 
+            }
             <EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin" FormName="LogInForm">
                 <div class="form-group">
                     <label class="form-label">Email</label>
@@ -27,7 +34,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg btn-hero">Login →</button>
             </EditForm>
-            
+
             <div style="margin-top: 1.5rem; text-align: center; padding-top: 1.5rem; border-top: 1px solid #e8e8e8;">
                 <p style="color: #666; margin-bottom: 0.75rem;">Don't have an account?</p>
                 <button class="btn btn-primary btn-lg btn-hero" @onclick="NavigateToRegister" style="width: 100%; background-color: #6c757d; border-color: #6c757d;">
@@ -36,9 +43,11 @@
             </div>
         </div>
     </div>
+    
 </div>
 @code {
     private LoginModel _loginModel = new();
+    private bool _errorMsg;
     
     
     private async Task HandleLogin()
@@ -55,7 +64,10 @@
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            //Add error when wrong password etc
+            Console.WriteLine("Login failed: " + e.Message);
+            _errorMsg = true;
+            StateHasChanged();
         }
     }
 
