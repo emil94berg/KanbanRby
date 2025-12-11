@@ -20,6 +20,8 @@ public class Column : BaseModel
     [Column("description")]
     public string? Description { get; set; }
     
+    [Column("position")]
+    public int Position { get; set; }
     
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;

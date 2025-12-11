@@ -1,26 +1,23 @@
-﻿@using KanbanRby.Models
+@using KanbanRby.Models
 @rendermode InteractiveServer
 @using Sessions.Interfaces
 @inject IUserSession UserSession
 @using Services.Interfaces
 @using Task = System.Threading.Tasks.Task
-@inject ICardManagementService CardService
+@using TaskModel = KanbanRby.Models.Task
+@inject ITaskManagementService TaskService
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-primary" style="margin: 2px" @onclick="ShowPopup">Create a new card</button>
+    <button class="btn btn-sm btn-outline-danger" style="margin: 2px" @onclick="ShowPopup">Update</button>
     @if (isPopupVisible)
     {
         <div class="popup-overlay">
             <div class="popup-content" @onabort:stopPropagation="true">
-                <EditForm Model="@_newCard" OnValidSubmit="@CreateAndClosePopup" FormName="CreateCard">
+                <EditForm Model="@_task" OnValidSubmit="@UpdateAndClosePopup" FormName="UpdateTask">
                     <div>
                         <label>Name: </label>
-                        <InputText @bind-Value="@_cardName"></InputText>
-                    </div>
-                    <div>
-                        <label>Description: </label>
-                        <InputText @bind-Value="@_cardDescription"></InputText>
+                        <InputText @bind-Value="@_task.Name"></InputText>
                     </div>
                     <button type="submit">Save and close</button>
                 </EditForm>
@@ -29,29 +26,33 @@
     }
     @code {
         [Parameter]
-        public int ColumnId { get; set; }
+        public int TaskId { get; set; }
         
         [Parameter]
-        public EventCallback OnCreate { get; set; }
+        public EventCallback OnUpdated { get; set; }
         
         private bool isPopupVisible = false;
-        private Card _newCard = new Card();
-        private string _cardName;
-        private string _cardDescription;
         private bool IsLoggedIn;
+        private TaskModel _task = new();
         
-        private void ShowPopup()
+        private async Task ShowPopup()
         {
             isPopupVisible = true;
+            _task = await TaskService.GetByIdAsync(TaskId);
+            StateHasChanged();
         }
 
-        private async Task CreateAndClosePopup()
+        private void ClosePopup()
         {
-            var user = UserSession.CurrentUser;
+            isPopupVisible = false;
+        }
+
+        private async Task UpdateAndClosePopup()
+        {
             try
             {
-                await CardService.CreateCardAsync(_cardName, _cardDescription, ColumnId);
-                await OnCreate.InvokeAsync();
+                await TaskService.UpdateTaskAsync(_task);
+                await OnUpdated.InvokeAsync();
             }
             catch(Exception e)
             {
