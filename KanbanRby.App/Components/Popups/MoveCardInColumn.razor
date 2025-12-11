@@ -8,8 +8,8 @@
 
 @if (IsLoggedIn)
 {
-    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveUp" disabled="@(!CanMoveUp)">↑</button>
-    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveDown" disabled="@(!CanMoveDown)">↓</button>
+    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveUp" disabled="@(!CanMoveUp || isLoading)">↑</button>
+    <button class="btn btn-sm btn-outline-secondary" style="margin: 2px" @onclick="MoveDown" disabled="@(!CanMoveDown || isLoading)">↓</button>
     
     @code {
         [Parameter]
@@ -25,24 +25,32 @@
         public EventCallback OnMoved { get; set; }
         
         private bool IsLoggedIn;
+        private bool isLoading = false;
         private bool CanMoveUp => ColumnCards.Any() && ColumnCards.OrderBy(c => c.RowId).First().Id != CardId;
         private bool CanMoveDown => ColumnCards.Any() && ColumnCards.OrderBy(c => c.RowId).Last().Id != CardId;
         
         private async Task MoveUp()
         {
+            isLoading = true;
             try
             {
                 await CardService.ChangeOrderOfCardsAsync(CardId, -1, ColumnCards);
                 await OnMoved.InvokeAsync();
+                await Task.Delay(1500);
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+            finally
+            {
+                isLoading = false;
+            }
         }
 
         private async Task MoveDown()
         {
+            isLoading = true;
             try
             {
                 await CardService.ChangeOrderOfCardsAsync(CardId, 1, ColumnCards);
@@ -51,6 +59,10 @@
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                isLoading = false;
             }
         }
 

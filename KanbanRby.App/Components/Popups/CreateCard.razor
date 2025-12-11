@@ -22,7 +22,7 @@
                         <label>Description: </label>
                         <InputText @bind-Value="@_cardDescription"></InputText>
                     </div>
-                    <button type="submit">Save and close</button>
+                    <button type="submit" disabled="@isLoading">@(isLoading ? "Saving..." : "Save and close")</button>
                 </EditForm>
             </div>
         </div>
@@ -39,6 +39,7 @@
         private string _cardName;
         private string _cardDescription;
         private bool IsLoggedIn;
+        private bool isLoading = false;
         
         private void ShowPopup()
         {
@@ -48,6 +49,7 @@
         private async Task CreateAndClosePopup()
         {
             var user = UserSession.CurrentUser;
+            isLoading = true;
             try
             {
                 await CardService.CreateCardAsync(_cardName, _cardDescription, ColumnId);
@@ -56,6 +58,10 @@
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                isLoading = false;
             }
             
             isPopupVisible = false;
