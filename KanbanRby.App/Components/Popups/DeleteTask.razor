@@ -29,6 +29,9 @@
     public int TaskId { get; set; }
     
     [Parameter]
+    public int CardId { get; set; }
+    
+    [Parameter]
     public EventCallback OnDeleted { get; set; }
     
     private bool isPopupVisible = false;
@@ -49,6 +52,7 @@
         try
         {
             await TaskService.DeleteTaskAsync(TaskId);
+            await TaskService.ReorderTasksInCardAsync(CardId);
             await OnDeleted.InvokeAsync();
         }
         catch(Exception e)

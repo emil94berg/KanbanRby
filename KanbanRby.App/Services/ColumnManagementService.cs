@@ -44,5 +44,20 @@ public class ColumnManagementService : IColumnManagerService
     public async Task<Column> UpdateColumnAsync(Column column) =>  await _columnFactory.UpdateAsync(column);
     
     public async Task DeleteColumnAsync(int columnId) => await _columnFactory.DeleteAsync(columnId);
+
+    public async Task ReorderColumnsInKanbanAsync(int kanbanId)
+    {
+        var columns = await GetColumnsByKanbanIdAsync(kanbanId);
+        var index = 0;
+        foreach (var column in columns.OrderBy(c => c.Position))
+        {
+            if (column.Position != index)
+            {
+                column.Position = index;
+                await _columnFactory.UpdateAsync(column);
+            }
+            index++;
+        }
+    }
     #endregion
 }
