@@ -40,7 +40,7 @@ else
 
 
 
-    <select class="form-select" @bind="SelectedBoardId">
+    <select class="kanban-form-select" @bind="SelectedBoardId">
         @foreach (var board in _boards)
         {
             <option value="@board.Id">
@@ -57,37 +57,38 @@ else
         {
             @foreach (var column in _columns)
             {
-                <div>
-                    <div style="display: flex; justify-content: space-between;">
+                <div class="column-header">
+                    <div>
                         <strong>@column.Name</strong>
                         <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
-                    </div>
-                    @if (_columnCards.TryGetValue(column.Id, out var cards))
-                    {
-                        @foreach (var card in cards)
+                        @if (_columnCards.TryGetValue(column.Id, out var cards))
                         {
-                            <div class="card">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <p style="margin: 0;">@card.Name</p>
+                            @foreach (var card in cards)
+                            {
+                                <div class="card">
+                                    <p>@card.Name</p>
                                     <DeleteCard CardId="card.Id" OnDeleted="ReloadPage"></DeleteCard>
-                                </div>
-                                @if (_cardTasks.TryGetValue(card.Id, out var tasks))
-                                {
-                                    @foreach (var task in tasks)
+                                    @if (_cardTasks.TryGetValue(card.Id, out var tasks))
                                     {
-                                        <div class="task">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <p style="margin: 0;">@task.Name</p>
+                                        @foreach (var task in tasks)
+                                        {
+                                            <div class="task @(task.IsCompleted ? "completed" : "")">
+                                                <p>@task.Name</p>
                                                 <DeleteTask TaskId="task.Id" OnDeleted="ReloadPage"></DeleteTask>
+                                                <button @onclick="() => TaskCompleted(task)">✓</button>
                                             </div>
-                                        </div>
+                                        }
                                     }
-                                }
-                                <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
-                            </div>
+                                    <CreateTask CardId="card.Id" OnCreate="ReloadPage"></CreateTask>
+                                </div>
+                            }
                         }
-                    }
-                    <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard>
+                        @if (cards.Count == 0)
+                        {
+                            <br/>
+                        }
+                        <CreateCard ColumnId="column.Id" OnCreate="ReloadPage"></CreateCard> 
+                    </div>
                 </div>
                 
             }
@@ -105,7 +106,7 @@ else
     private List<Column> _columns = new();
     private Dictionary<int ,List<Card>> _columnCards = new();
     private Dictionary<int, List<TaskModel>> _cardTasks = new();
-    private Kanban? _selectedBoard;
+    private Kanban _selectedBoard;
     private bool IsLoggedIn;
 
 
@@ -175,6 +176,12 @@ else
         }
 
         UserSession.OnChange += StateHasChanged;
+    }
+
+    public async Task TaskCompleted(Models.Task task)
+    {
+        task.IsCompleted = !task.IsCompleted;
+        await Task.CompletedTask;
     }
 
     public void Dispose()

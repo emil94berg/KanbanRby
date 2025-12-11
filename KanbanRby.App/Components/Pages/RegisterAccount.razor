@@ -36,7 +36,7 @@
     [SupplyParameterFromForm]
     private string ConfirmPassword { get; set; } = string.Empty;
 
-    private async Task CreateAccount()
+    public async Task CreateAccount()
     {
         if (!_loginModel.Email.IsNullOrEmpty() && !_loginModel.Password.IsNullOrEmpty() && !_loginModel.DisplayName.IsNullOrEmpty()
             && _loginModel.Password == ConfirmPassword)
