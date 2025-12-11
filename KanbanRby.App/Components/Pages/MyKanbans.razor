@@ -12,7 +12,7 @@
 @inject IUserSession UserSession
 @rendermode InteractiveServer
 
-<h3>My Kanbans</h3>
+
 <CreateKanban></CreateKanban>
 @if (_boards == null)
 {
@@ -24,22 +24,12 @@ else if (!_boards.Any())
 }
 else
 {
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>@_selectedBoard?.Name</h1>
+        </div>
+    </div>
     
-    <h1>@_selectedBoard?.Name</h1>
-    @if (IsLoggedIn)
-    {
-        @if (@UserSession.CurrentUser.UserMetadata.ContainsKey("display_name"))
-        {
-            <h1>@UserSession.CurrentUser.UserMetadata["display_name"]</h1>
-        }
-        else
-        {
-            <h1>@UserSession.CurrentUser.Email</h1>
-        }
-    }
-
-
-
     <select class="form-select" @bind="SelectedBoardId">
         @foreach (var board in _boards)
         {
