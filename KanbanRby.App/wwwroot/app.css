@@ -98,13 +98,17 @@ h1:focus {
     border-radius: 10px;
     padding: 12px;
     margin-bottom: 12px; 
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 6px 0 rgba(50, 50, 50, 0.2);
     border: 2px solid black;
     transition: 0.15s ease;
 }
 .card:hover{
     transform: scale(1.10);
     box-shadow: 0 4px 12px 0 rgba(50, 50, 50, 0.08);
+}
+.popup-overlay ~ * .card:hover,
+body:has(.popup-overlay) .card:hover {
+    transform: none;
 }
 .card p {
     font-size: 0.9rem;

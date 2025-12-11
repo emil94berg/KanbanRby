@@ -40,6 +40,9 @@
     private string _kanbanName;
     private string _kanbanDescription;
     private bool IsLoggedIn;
+    [Parameter]
+    public EventCallback OnCreate { get; set; }
+    
     
     private void ShowPopup()
     {
@@ -59,6 +62,7 @@
         try
         {
             await KanbanService.CreateKanbanAsync(_kanbanName, _kanbanDescription, user.Id);
+            await OnCreate.InvokeAsync();
         }
         catch(Exception e)
         {
