@@ -70,6 +70,7 @@
                 if (_selectedColumnId != CurrentColumnId)
                 {
                     await CardService.MoveCardBetweenColumnsAsync(CardId, _selectedColumnId);
+                    await CardService.ReorderCardsInColumnAsync(_selectedColumnId);
                     await OnMoved.InvokeAsync();
                 }
             }

@@ -89,7 +89,7 @@ public class CardManagementService : ICardManagementService
     public async Task ReorderCardsInColumnAsync(int columnId)
     {
         var cards = (await GetAllCardsAsync(columnId));
-        var index = 1;
+        var index = 0;
         foreach (var card in cards)
         {
             if (card.RowId != index)

@@ -55,8 +55,10 @@ else
                 <div>
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
-                        <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
-                        <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
+                        <div>
+                            <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
+                            <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
+                        </div>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
                     {
