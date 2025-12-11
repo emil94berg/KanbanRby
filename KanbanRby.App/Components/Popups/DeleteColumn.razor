@@ -29,6 +29,9 @@
     public int ColumnId { get; set; }
     
     [Parameter]
+    public int KanbanId { get; set; }
+    
+    [Parameter]
     public EventCallback OnDeleted { get; set; }
     
     private bool isPopupVisible = false;
@@ -49,6 +52,7 @@
         try
         {
             await ColumnService.DeleteColumnAsync(ColumnId);
+            await ColumnService.ReorderColumnsInKanbanAsync(KanbanId);
             await OnDeleted.InvokeAsync();
         }
         catch(Exception e)

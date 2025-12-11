@@ -50,7 +50,7 @@ else
                 <div>
                     <div style="display: flex; justify-content: space-between;">
                         <strong>@column.Name</strong>
-                        <DeleteColumn ColumnId="column.Id" OnDeleted="ReloadPage"></DeleteColumn>
+                        <DeleteColumn ColumnId="column.Id" KanbanId="@SelectedBoardId" OnDeleted="ReloadPage"></DeleteColumn>
                         <UpdateColumn ColumnId="column.Id" OnUpdated="ReloadPage"></UpdateColumn>
                     </div>
                     @if (_columnCards.TryGetValue(column.Id, out var cards))
