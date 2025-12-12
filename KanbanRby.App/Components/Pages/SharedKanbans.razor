@@ -15,7 +15,14 @@
 <PageTitle>Shared Kanbans</PageTitle>
 
 <div class="kanban-page">
-    @if (_boards == null)
+    @if (!IsLoggedIn)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4>Access Denied</h4>
+            <p>You must be logged in to view shared kanbans. Please log in to continue.</p>
+        </div>
+    }
+    else if (_boards == null)
     {
         <div class="loading-state">
             <strong>Loading...</strong>
